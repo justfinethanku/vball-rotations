@@ -10,6 +10,7 @@ export function useRotation(players: Player[], system: RotationSystem) {
   const [currentRotation, setCurrentRotation] = useState<RotationNumber>(1);
   const [currentPhase, setCurrentPhase] = useState<Phase>('serve');
   const [focusedRole, setFocusedRole] = useState<PlayerRole | null>(null);
+  const [focusedPlayerId, setFocusedPlayerId] = useState<string | null>(null);
   const [showZones, setShowZones] = useState(true);
 
   const { positions, zones } = useMemo(
@@ -60,6 +61,20 @@ export function useRotation(players: Player[], system: RotationSystem) {
 
   const toggleFocusedRole = useCallback((role: PlayerRole | null) => {
     setFocusedRole(prev => prev === role ? null : role);
+    setFocusedPlayerId(null); // clear player-specific focus when using role filter
+  }, []);
+
+  const toggleFocusedPlayer = useCallback((playerId: string, role: PlayerRole) => {
+    setFocusedPlayerId(prev => {
+      if (prev === playerId) {
+        // Unfocus: clear both player and role
+        setFocusedRole(null);
+        return null;
+      }
+      // Focus on this specific player + set role for zone/info display
+      setFocusedRole(role);
+      return playerId;
+    });
   }, []);
 
   // Get previous positions for arrows
@@ -81,6 +96,7 @@ export function useRotation(players: Player[], system: RotationSystem) {
     currentRotation,
     currentPhase,
     focusedRole,
+    focusedPlayerId,
     showZones,
     positions,
     zones,
@@ -92,5 +108,6 @@ export function useRotation(players: Player[], system: RotationSystem) {
     stepBackward,
     nextRotation,
     toggleFocusedRole,
+    toggleFocusedPlayer,
   };
 }

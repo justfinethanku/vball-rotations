@@ -14,7 +14,9 @@ import PhaseToggle from '@/components/controls/PhaseToggle';
 import PlaybackControls from '@/components/controls/PlaybackControls';
 import PositionFilter from '@/components/controls/PositionFilter';
 import { SetupDrawer } from '@/components/setup/SetupDrawer';
+import { CompareView } from '@/components/compare/CompareView';
 import { ShareButton } from '@/components/sharing/ShareButton';
+import Welcome from '@/components/onboarding/Welcome';
 import { PositionInfo } from '@/components/info/PositionInfo';
 import { ProgressTimeline } from '@/components/controls/ProgressTimeline';
 import { ROLE_COLORS } from '@/lib/constants';
@@ -75,7 +77,15 @@ const phaseShort: Record<Phase, string> = {
 // ─── Main page ─────────────────────────────────────────────────
 export default function Home() {
   const [setupOpen, setSetupOpen] = useState(false);
+  const [compareOpen, setCompareOpen] = useState(false);
+  const [showWelcome, setShowWelcome] = useState(false);
   const courtRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && !localStorage.getItem('vball-onboarding-seen')) {
+      setShowWelcome(true);
+    }
+  }, []);
 
   const {
     system,
@@ -92,6 +102,7 @@ export default function Home() {
     currentRotation,
     currentPhase,
     focusedRole,
+    focusedPlayerId,
     showZones,
     positions,
     zones,
@@ -102,6 +113,7 @@ export default function Home() {
     stepForward,
     stepBackward,
     toggleFocusedRole,
+    toggleFocusedPlayer,
   } = useRotation(players, system);
 
   const { isPlaying, speed, setSpeed, togglePlay } = useAnimation(stepForward);
@@ -148,8 +160,8 @@ export default function Home() {
         case 'Escape':
           if (setupOpen) {
             setSetupOpen(false);
-          } else if (focusedRole !== null) {
-            toggleFocusedRole(focusedRole); // clears it
+          } else if (focusedPlayerId !== null || focusedRole !== null) {
+            if (focusedRole) toggleFocusedRole(focusedRole); // clears both
           }
           break;
         case '1':
@@ -165,7 +177,7 @@ export default function Home() {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [stepForward, stepBackward, togglePlay, focusedRole, toggleFocusedRole, setCurrentRotation, setupOpen, setSetupOpen]);
+  }, [stepForward, stepBackward, togglePlay, focusedRole, focusedPlayerId, toggleFocusedRole, setCurrentRotation, setupOpen, setSetupOpen]);
 
   // ─── Timeline jump handler ───────────────────────────────────
   const handleTimelineJump = useCallback(
@@ -182,8 +194,13 @@ export default function Home() {
       {/* Zone overlays (rendered first, behind players) */}
       {showZones &&
         zones.map((zone) => {
-          const isDimmed =
-            focusedRole !== null && zone.role !== focusedRole;
+          // When a specific player is focused, only show that player's zone
+          const isZoneFocused = focusedPlayerId
+            ? zone.playerId === focusedPlayerId
+            : focusedRole !== null && zone.role === focusedRole;
+          const isDimmed = focusedPlayerId
+            ? zone.playerId !== focusedPlayerId
+            : focusedRole !== null && zone.role !== focusedRole;
           return (
             <ZoneOverlay
               key={`zone-${zone.playerId}`}
@@ -194,7 +211,7 @@ export default function Home() {
               color={ROLE_COLORS[zone.role]}
               label={zone.label}
               isDimmed={isDimmed}
-              isFocusedZone={focusedRole !== null && zone.role === focusedRole}
+              isFocusedZone={isZoneFocused}
             />
           );
         })}
@@ -209,8 +226,9 @@ export default function Home() {
           const dx = Math.abs(pos.position.x - prevPos.position.x);
           const dy = Math.abs(pos.position.y - prevPos.position.y);
           if (dx < 0.3 && dy < 0.3) return null;
-          const isDimmed =
-            focusedRole !== null && pos.role !== focusedRole;
+          const isDimmed = focusedPlayerId
+            ? pos.playerId !== focusedPlayerId
+            : focusedRole !== null && pos.role !== focusedRole;
           return (
             <MovementArrow
               key={`arrow-${pos.playerId}`}
@@ -226,9 +244,13 @@ export default function Home() {
       {positions.map((pos) => {
         const player = players.find((p) => p.id === pos.playerId);
         if (!player) return null;
-        const isFocused = focusedRole === pos.role;
-        const isDimmed =
-          focusedRole !== null && pos.role !== focusedRole;
+        // When a specific player is focused, only THAT player gets "YOU"
+        const isFocused = focusedPlayerId
+          ? pos.playerId === focusedPlayerId
+          : focusedRole === pos.role;
+        const isDimmed = focusedPlayerId
+          ? pos.playerId !== focusedPlayerId
+          : focusedRole !== null && pos.role !== focusedRole;
         return (
           <PlayerToken
             key={pos.playerId}
@@ -239,7 +261,7 @@ export default function Home() {
             position={pos.position}
             isFocused={isFocused}
             isDimmed={isDimmed}
-            onClick={() => toggleFocusedRole(pos.role)}
+            onClick={() => toggleFocusedPlayer(pos.playerId, pos.role)}
           />
         );
       })}
@@ -283,7 +305,18 @@ export default function Home() {
             </button>
           </div>
 
-          <ShareButton onShare={shareUrl} />
+          <ShareButton onShare={shareUrl} teamName={teamName} system={system} />
+
+          <button
+            onClick={() => setCompareOpen(true)}
+            className="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors"
+            aria-label="Compare rotations"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="2" y="3" width="8" height="18" rx="1" />
+              <rect x="14" y="3" width="8" height="18" rx="1" />
+            </svg>
+          </button>
 
           <button
             onClick={() => setSetupOpen(true)}
@@ -494,6 +527,14 @@ export default function Home() {
         </div>
       </div>
 
+      {/* Compare View */}
+      <CompareView
+        isOpen={compareOpen}
+        onClose={() => setCompareOpen(false)}
+        players={players}
+        system={system}
+      />
+
       {/* Setup Drawer */}
       <SetupDrawer
         isOpen={setupOpen}
@@ -505,6 +546,16 @@ export default function Home() {
         onTeamNameChange={setTeamName}
         onSystemChange={switchSystem}
       />
+
+      {/* Onboarding overlay for first-time users */}
+      {showWelcome && (
+        <Welcome
+          onComplete={() => {
+            setShowWelcome(false);
+            localStorage.setItem('vball-onboarding-seen', '1');
+          }}
+        />
+      )}
     </main>
   );
 }
