@@ -53,7 +53,7 @@ export function ShareButton({ onShare, teamName, system }: ShareButtonProps) {
       <button
         onClick={handleOpen}
         disabled={isLoading}
-        className="flex items-center gap-2 rounded-lg bg-white/10 px-3 py-2 text-sm text-white transition-colors hover:bg-white/20 disabled:opacity-50"
+        className="p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 btn-press transition-all disabled:opacity-50"
         aria-label="Share"
       >
         <svg
@@ -71,7 +71,6 @@ export function ShareButton({ onShare, teamName, system }: ShareButtonProps) {
           <polyline points="16 6 12 2 8 6" />
           <line x1="12" y1="2" x2="12" y2="15" />
         </svg>
-        Share
       </button>
 
       <AnimatePresence>

@@ -269,273 +269,174 @@ export default function Home() {
   );
 
   return (
-    <main className="min-h-dvh flex flex-col">
-      {/* Top Bar */}
-      <header className="flex items-center justify-between px-3 py-2 border-b border-white/10 bg-gray-900/80 backdrop-blur-sm sticky top-0 z-30">
+    <main className="h-dvh flex flex-col overflow-hidden bg-gray-950">
+      {/* ── Header ── */}
+      <header className="glass border-b border-white/5 px-3 py-1.5 flex items-center justify-between z-30 shrink-0">
         <div className="flex items-center gap-2">
-          <h1 className="text-base font-bold tracking-tight whitespace-nowrap">
-            <span className="text-indigo-400">VB</span>all
-            <span className="hidden sm:inline"> Rotations</span>
-          </h1>
-          <span className="text-xs text-gray-500 hidden sm:inline">
-            {system.toUpperCase()} System
+          <div className="w-6 h-6 rounded-full bg-gradient-to-br from-indigo-400 to-indigo-600 flex items-center justify-center shadow-lg shadow-indigo-500/20">
+            <span className="text-[10px] font-black text-white">V</span>
+          </div>
+          <span className="text-sm font-semibold tracking-tight text-white">
+            VBall<span className="text-indigo-400 hidden sm:inline"> Rotations</span>
           </span>
         </div>
-        <div className="flex items-center gap-2">
-          {/* System Toggle */}
-          <div className="flex bg-white/10 rounded-lg p-0.5 text-xs">
-            <button
-              onClick={() => switchSystem('5-1')}
-              className={`px-2 py-1 rounded-md font-medium transition-colors ${
-                system === '5-1'
-                  ? 'bg-indigo-500 text-white'
-                  : 'text-gray-400 hover:text-white'
-              }`}
-            >
-              5-1
-            </button>
-            <button
-              onClick={() => switchSystem('6-2')}
-              className={`px-2 py-1 rounded-md font-medium transition-colors ${
-                system === '6-2'
-                  ? 'bg-indigo-500 text-white'
-                  : 'text-gray-400 hover:text-white'
-              }`}
-            >
-              6-2
-            </button>
-          </div>
 
+        <div className="absolute left-1/2 -translate-x-1/2 flex bg-white/8 rounded-full p-0.5">
+          {(['5-1', '6-2'] as const).map(s => (
+            <button
+              key={s}
+              onClick={() => switchSystem(s)}
+              className={`px-3 py-0.5 rounded-full text-xs font-bold btn-press transition-all ${
+                system === s ? 'bg-indigo-500 text-white shadow-md shadow-indigo-500/30' : 'text-gray-400 hover:text-white'
+              }`}
+            >
+              {s}
+            </button>
+          ))}
+        </div>
+
+        <div className="flex items-center gap-1">
           <ShareButton onShare={shareUrl} teamName={teamName} system={system} />
-
-          <button
-            onClick={() => setCompareOpen(true)}
-            className="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors"
-            aria-label="Compare rotations"
-          >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <rect x="2" y="3" width="8" height="18" rx="1" />
-              <rect x="14" y="3" width="8" height="18" rx="1" />
-            </svg>
+          <button onClick={() => setCompareOpen(true)} className="p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 btn-press transition-all" aria-label="Compare">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="3" width="8" height="18" rx="1"/><rect x="14" y="3" width="8" height="18" rx="1"/></svg>
           </button>
-
-          <button
-            onClick={() => setSetupOpen(true)}
-            className="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors"
-            aria-label="Setup team"
-          >
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-              <circle cx="9" cy="7" r="4" />
-              <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-              <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-            </svg>
+          <button onClick={() => setSetupOpen(true)} className="p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 btn-press transition-all" aria-label="Setup">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
           </button>
         </div>
       </header>
 
-      {/* Main Content Area */}
-      <div className="flex-1 flex flex-col md:flex-row md:gap-6 md:px-6 md:py-4 md:max-w-[960px] md:mx-auto md:w-full">
-        {/* Court Column */}
-        <div className="flex-1 flex flex-col items-center md:items-end px-2 py-1 md:px-0 md:py-0">
-          <div ref={courtRef} className="w-full max-w-[450px] md:max-w-[550px] relative">
-            <Court>{courtContent}</Court>
+      {/* ── Main Content ── */}
+      <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
+
+        {/* ── Court Area ── */}
+        <div className="flex-1 relative overflow-hidden flex items-center justify-center" ref={courtRef}>
+          {/* Floating state banner (mobile) */}
+          <div className="md:hidden absolute top-2 left-1/2 -translate-x-1/2 z-20">
+            <div className="glass rounded-full px-4 py-1 border border-white/10 shadow-lg shadow-black/20 flex items-center gap-2">
+              <span className="text-xs font-bold text-indigo-400">R{currentRotation}</span>
+              <span className="w-px h-3 bg-white/20" />
+              <span className="text-xs font-medium text-white/90 capitalize">{currentPhase}</span>
+            </div>
           </div>
 
-          {/* Position Info (mobile, when a role is focused) */}
+          {/* Court SVG — fills the space */}
+          <div className="w-full h-full flex items-center justify-center p-2 md:p-4">
+            <div className="w-full max-w-[640px]">
+              <Court>{courtContent}</Court>
+            </div>
+          </div>
+
+          {/* Floating controls (mobile only) — gradient fade over court bottom */}
+          <div className="md:hidden absolute bottom-0 inset-x-0 z-20 fade-up pt-16 pb-safe">
+            <div className="px-3 space-y-1.5">
+              {/* Position filter pills */}
+              <div className="flex gap-1.5 justify-center">
+                <PositionFilter focusedRole={focusedRole} onToggle={toggleFocusedRole} system={system} />
+              </div>
+
+              {/* Control row: nav + rotation + phase dots + play */}
+              <div className="flex items-center justify-center gap-1.5">
+                <button onClick={stepBackward} className="p-1.5 rounded-full text-white/60 hover:text-white hover:bg-white/10 btn-press" aria-label="Back">
+                  <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><path d="M12.5 15L7.5 10L12.5 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                </button>
+
+                <div className="flex bg-white/10 rounded-full p-0.5">
+                  {([1,2,3,4,5,6] as RotationNumber[]).map(r => (
+                    <button key={r} onClick={() => setCurrentRotation(r)}
+                      className={`w-7 h-7 rounded-full text-xs font-bold btn-press transition-all ${
+                        currentRotation === r ? 'bg-indigo-500 text-white shadow-md shadow-indigo-500/30' : 'text-gray-400'
+                      }`}>{r}</button>
+                  ))}
+                </div>
+
+                <button onClick={stepForward} className="p-1.5 rounded-full text-white/60 hover:text-white hover:bg-white/10 btn-press" aria-label="Forward">
+                  <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><path d="M7.5 5L12.5 10L7.5 15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                </button>
+
+                <div className="w-px h-4 bg-white/10" />
+
+                {/* Phase dots */}
+                <div className="flex items-center gap-1">
+                  {(['serve','receive','transition'] as Phase[]).map(p => (
+                    <button key={p} onClick={() => setCurrentPhase(p)}
+                      className={`btn-press transition-all ${
+                        currentPhase === p ? 'w-6 h-2 rounded-full bg-indigo-400' : 'w-2 h-2 rounded-full bg-white/25 hover:bg-white/40'
+                      }`}
+                      title={p}
+                      aria-label={p}
+                    />
+                  ))}
+                </div>
+
+                <div className="w-px h-4 bg-white/10" />
+
+                <button onClick={togglePlay}
+                  className="w-8 h-8 rounded-full bg-indigo-500 text-white flex items-center justify-center btn-press shadow-lg shadow-indigo-500/30 hover:bg-indigo-400 transition-all"
+                  aria-label={isPlaying ? 'Pause' : 'Play'}>
+                  {isPlaying ? (
+                    <svg width="12" height="12" viewBox="0 0 22 22" fill="none"><rect x="5" y="4" width="4" height="14" rx="1" fill="currentColor"/><rect x="13" y="4" width="4" height="14" rx="1" fill="currentColor"/></svg>
+                  ) : (
+                    <svg width="12" height="12" viewBox="0 0 22 22" fill="none"><path d="M7 4L17 11L7 18V4Z" fill="currentColor"/></svg>
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Position Info overlay (mobile, when focused) */}
           {focusedRole && (
-            <div className="w-full max-w-[450px] mt-2 md:hidden">
-              <PositionInfo
-                role={focusedRole}
-                rotation={currentRotation}
-                phase={currentPhase}
-                system={system}
-              />
+            <div className="md:hidden absolute top-12 left-2 right-2 z-20">
+              <PositionInfo role={focusedRole} rotation={currentRotation} phase={currentPhase} system={system} />
             </div>
           )}
         </div>
 
-        {/* Side Panel (desktop only) */}
-        <div className="hidden md:flex md:flex-col md:w-[280px] md:flex-shrink-0 md:gap-4 md:py-2">
-          <PositionFilter
-            focusedRole={focusedRole}
-            onToggle={toggleFocusedRole}
-            system={system}
-          />
-
-          <div className="flex justify-center">
-            <RotationSelector
-              current={currentRotation}
-              onChange={setCurrentRotation}
-            />
-          </div>
-
-          <div className="flex justify-center">
-            <PhaseToggle current={currentPhase} onChange={setCurrentPhase} />
-          </div>
-
-          <PlaybackControls
-            isPlaying={isPlaying}
-            speed={speed}
-            onTogglePlay={togglePlay}
-            onStepForward={stepForward}
-            onStepBackward={stepBackward}
-            onSpeedChange={setSpeed}
-          />
-
-          <ProgressTimeline
-            currentRotation={currentRotation}
-            currentPhase={currentPhase}
-            onJump={handleTimelineJump}
-          />
-
-          {focusedRole && (
-            <PositionInfo
-              role={focusedRole}
-              rotation={currentRotation}
-              phase={currentPhase}
-              system={system}
-            />
-          )}
-        </div>
-      </div>
-
-      {/* Bottom Controls (mobile only) */}
-      <div className="md:hidden border-t border-white/10 bg-gray-900/80 backdrop-blur-sm pb-[env(safe-area-inset-bottom)] sticky bottom-0 z-30">
-        <div className="max-w-[500px] mx-auto px-2 py-1.5 space-y-1.5">
-          {/* Row 1: Position Filter */}
-          <PositionFilter
-            focusedRole={focusedRole}
-            onToggle={toggleFocusedRole}
-            system={system}
-          />
-
-          {/* Row 2: Nav + Rotations + Phase + Play */}
-          <div className="flex items-center justify-center gap-1">
-            {/* Step backward */}
-            <button
-              onClick={stepBackward}
-              className="p-1.5 min-w-[36px] min-h-[36px] flex items-center justify-center rounded-lg text-white hover:bg-white/10 transition-colors"
-              aria-label="Step backward"
-            >
-              <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
-                <path d="M12.5 15L7.5 10L12.5 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </button>
-
-            {/* Compact rotation selector (just numbers) */}
-            <div className="flex bg-white/10 rounded-lg p-0.5">
-              {([1, 2, 3, 4, 5, 6] as RotationNumber[]).map((r) => (
-                <button
-                  key={r}
-                  onClick={() => setCurrentRotation(r)}
-                  className={`w-[28px] h-[28px] text-xs font-medium rounded-md transition-colors ${
-                    currentRotation === r
-                      ? 'bg-indigo-500 text-white'
-                      : 'text-gray-400 hover:bg-white/10'
-                  }`}
-                >
-                  {r}
-                </button>
-              ))}
+        {/* ── Side Panel (desktop only) ── */}
+        <div className="hidden md:flex md:flex-col md:w-[300px] md:shrink-0 border-l border-white/5 glass overflow-y-auto">
+          <div className="p-4 space-y-4">
+            {/* State card */}
+            <div className="rounded-xl bg-gradient-to-br from-indigo-500/15 to-purple-500/10 border border-indigo-500/15 p-4 text-center">
+              <div className="text-3xl font-black text-white tracking-tight">R{currentRotation}</div>
+              <div className="text-sm font-medium text-indigo-300 capitalize mt-0.5">{currentPhase}</div>
             </div>
 
-            {/* Step forward */}
-            <button
-              onClick={stepForward}
-              className="p-1.5 min-w-[36px] min-h-[36px] flex items-center justify-center rounded-lg text-white hover:bg-white/10 transition-colors"
-              aria-label="Step forward"
-            >
-              <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
-                <path d="M7.5 5L12.5 10L7.5 15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </button>
-
-            {/* Divider */}
-            <div className="w-px h-5 bg-white/15" />
-
-            {/* Phase toggle (compact) */}
-            <div className="flex bg-white/10 rounded-lg p-0.5">
-              {(['serve', 'receive', 'transition'] as Phase[]).map((phase) => (
-                <button
-                  key={phase}
-                  onClick={() => setCurrentPhase(phase)}
-                  className={`px-1.5 py-1 text-[10px] font-medium rounded-md transition-colors min-h-[28px] ${
-                    currentPhase === phase
-                      ? 'bg-indigo-500 text-white'
-                      : 'text-gray-400 hover:bg-white/10'
-                  }`}
-                >
-                  {phaseShort[phase]}
-                </button>
-              ))}
+            {/* Position filter */}
+            <div>
+              <div className="text-[10px] uppercase tracking-wider text-gray-500 mb-1.5">Position</div>
+              <PositionFilter focusedRole={focusedRole} onToggle={toggleFocusedRole} system={system} />
             </div>
 
-            {/* Divider */}
-            <div className="w-px h-5 bg-white/15" />
+            {/* Rotation selector */}
+            <div>
+              <div className="text-[10px] uppercase tracking-wider text-gray-500 mb-1.5">Rotation</div>
+              <RotationSelector current={currentRotation} onChange={setCurrentRotation} />
+            </div>
 
-            {/* Play/Pause */}
-            <button
-              onClick={togglePlay}
-              className="p-1.5 min-w-[36px] min-h-[36px] flex items-center justify-center rounded-full bg-indigo-500 text-white hover:bg-indigo-600 transition-colors"
-              aria-label={isPlaying ? 'Pause' : 'Play'}
-            >
-              {isPlaying ? (
-                <svg width="14" height="14" viewBox="0 0 22 22" fill="none">
-                  <rect x="5" y="4" width="4" height="14" rx="1" fill="currentColor" />
-                  <rect x="13" y="4" width="4" height="14" rx="1" fill="currentColor" />
-                </svg>
-              ) : (
-                <svg width="14" height="14" viewBox="0 0 22 22" fill="none">
-                  <path d="M6 4L18 11L6 18V4Z" fill="currentColor" />
-                </svg>
-              )}
-            </button>
+            {/* Phase toggle */}
+            <div>
+              <div className="text-[10px] uppercase tracking-wider text-gray-500 mb-1.5">Phase</div>
+              <PhaseToggle current={currentPhase} onChange={setCurrentPhase} />
+            </div>
+
+            {/* Playback */}
+            <PlaybackControls isPlaying={isPlaying} speed={speed} onTogglePlay={togglePlay} onStepForward={stepForward} onStepBackward={stepBackward} onSpeedChange={setSpeed} />
+
+            {/* Progress */}
+            <ProgressTimeline currentRotation={currentRotation} currentPhase={currentPhase} onJump={handleTimelineJump} />
+
+            {/* Position info */}
+            {focusedRole && (
+              <PositionInfo role={focusedRole} rotation={currentRotation} phase={currentPhase} system={system} />
+            )}
           </div>
         </div>
       </div>
 
-      {/* Compare View */}
-      <CompareView
-        isOpen={compareOpen}
-        onClose={() => setCompareOpen(false)}
-        players={players}
-        system={system}
-        useLibero={useLibero}
-      />
-
-      {/* Setup Drawer */}
-      <SetupDrawer
-        isOpen={setupOpen}
-        onClose={() => setSetupOpen(false)}
-        players={players}
-        teamName={teamName}
-        system={system}
-        useLibero={useLibero}
-        onUpdatePlayer={updatePlayer}
-        onTeamNameChange={setTeamName}
-        onSystemChange={switchSystem}
-        onUseLiberoChange={setUseLibero}
-      />
-
-      {/* Onboarding overlay for first-time users */}
-      {showWelcome && (
-        <Welcome
-          onComplete={() => {
-            setShowWelcome(false);
-            localStorage.setItem('vball-onboarding-seen', '1');
-          }}
-        />
-      )}
+      {/* Modals/Drawers (unchanged) */}
+      <CompareView isOpen={compareOpen} onClose={() => setCompareOpen(false)} players={players} system={system} useLibero={useLibero} />
+      <SetupDrawer isOpen={setupOpen} onClose={() => setSetupOpen(false)} players={players} teamName={teamName} system={system} useLibero={useLibero} onUpdatePlayer={updatePlayer} onTeamNameChange={setTeamName} onSystemChange={switchSystem} onUseLiberoChange={setUseLibero} />
+      {showWelcome && <Welcome onComplete={() => { setShowWelcome(false); localStorage.setItem('vball-onboarding-seen', '1'); }} />}
     </main>
   );
 }

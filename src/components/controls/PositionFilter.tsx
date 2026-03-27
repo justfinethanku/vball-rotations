@@ -20,11 +20,11 @@ export default function PositionFilter({ focusedRole, onToggle, system }: Positi
   const roles = system === '6-2' ? roles62 : roles51;
 
   return (
-    <div className="overflow-x-auto flex gap-1.5 pb-1 md:flex-wrap md:overflow-visible">
+    <div className="flex gap-1 flex-wrap">
       {/* All chip */}
       <button
         onClick={() => onToggle(null)}
-        className={`flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-full transition-colors ${
+        className={`flex-shrink-0 flex items-center gap-1.5 px-2 py-1 text-xs font-medium rounded-full transition-colors ${
           focusedRole === null
             ? 'bg-white text-black'
             : 'bg-white/10 text-white hover:bg-white/20'
@@ -45,7 +45,7 @@ export default function PositionFilter({ focusedRole, onToggle, system }: Positi
           <button
             key={role}
             onClick={() => onToggle(isActive ? null : role)}
-            className={`flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-full transition-colors ${
+            className={`flex-shrink-0 flex items-center gap-1.5 px-2 py-1 text-xs font-medium rounded-full transition-colors ${
               isActive
                 ? 'text-white'
                 : 'bg-white/10 text-white hover:bg-white/20'
