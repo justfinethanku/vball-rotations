@@ -1,6 +1,16 @@
-import { Player, PlayerRole, RotationNumber, Phase, RotationSystem, PlayerPosition, ZoneArea } from './types';
+import { Player, PlayerRole, RotationNumber, Phase, RotationSystem, PlayerPosition, ZoneArea, VariantId } from './types';
 import { rotations51, RoleKey51 } from '@/data/rotations-5-1';
 import { rotations62, RoleKey62 } from '@/data/rotations-6-2';
+import { rotations51Spread } from '@/data/rotations-5-1-spread';
+import { rotations51Slide } from '@/data/rotations-5-1-slide';
+import { rotations51Reverse } from '@/data/rotations-5-1-reverse';
+
+const VARIANT_DATA: Record<VariantId, typeof rotations51> = {
+  standard: rotations51,
+  spread: rotations51Spread,
+  slide: rotations51Slide,
+  reverse: rotations51Reverse,
+};
 
 function mapPlayersToRoles51(players: Player[]): Record<RoleKey51, Player | undefined> {
   const mapping: Partial<Record<RoleKey51, Player>> = {};
@@ -44,13 +54,15 @@ export function getRotationState(
   system: RotationSystem,
   rotation: RotationNumber,
   phase: Phase,
-  useLibero: boolean = true
+  useLibero: boolean = true,
+  variant: VariantId = 'standard'
 ): { positions: PlayerPosition[]; zones: ZoneArea[] } {
   const positions: PlayerPosition[] = [];
   const zones: ZoneArea[] = [];
 
   if (system === '5-1') {
-    const data = rotations51[rotation][phase];
+    const rotationData = VARIANT_DATA[variant] || rotations51;
+    const data = rotationData[rotation][phase];
     const playerMap = mapPlayersToRoles51(players);
     const hasLibero = !!playerMap['L'];
 
