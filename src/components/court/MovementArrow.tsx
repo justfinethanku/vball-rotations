@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useId } from 'react';
-import { motion } from 'framer-motion';
 import { CourtPosition } from '@/lib/types';
 import { courtToSvg, getArrowPath } from '@/lib/courtMath';
 
@@ -24,9 +23,8 @@ export default function MovementArrow({
   const pathD = getArrowPath(svgFrom, svgTo);
 
   return (
-    <g opacity={isDimmed ? 0.15 : 1}>
+    <g opacity={isDimmed ? 0.15 : 0.7} style={{ transition: 'opacity 0.3s ease' }}>
       <defs>
-        {/* Arrowhead marker */}
         <marker
           id={markerId}
           markerWidth="8"
@@ -40,28 +38,14 @@ export default function MovementArrow({
         </marker>
       </defs>
 
-      {/* Arrow path */}
-      <motion.path
+      <path
         d={pathD}
         stroke={color}
-        strokeWidth={2.5}
+        strokeWidth={2}
         strokeDasharray="6 4"
         strokeLinecap="round"
         fill="none"
         markerEnd={`url(#${markerId})`}
-        initial={{ pathLength: 0 }}
-        animate={{
-          pathLength: 1,
-          strokeDashoffset: [0, -20],
-        }}
-        transition={{
-          pathLength: { duration: 0.6, ease: 'easeInOut' },
-          strokeDashoffset: {
-            duration: 1,
-            repeat: Infinity,
-            ease: 'linear',
-          },
-        }}
       />
     </g>
   );

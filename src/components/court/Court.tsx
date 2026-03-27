@@ -26,12 +26,6 @@ export default function Court({ children }: CourtProps) {
           <stop offset="100%" stopColor="#117A32" />
         </radialGradient>
 
-        {/* Court texture */}
-        <pattern id="court-texture" width="450" height="6" patternUnits="userSpaceOnUse">
-          <rect width="450" height="3" fill="rgba(255,255,255,0.015)" />
-          <rect y="3" width="450" height="3" fill="transparent" />
-        </pattern>
-
         {/* Net cross-hatching pattern */}
         <pattern
           id={netPatternId}
@@ -52,15 +46,6 @@ export default function Court({ children }: CourtProps) {
         height={COURT_SVG.height}
         fill="url(#court-gradient)"
         rx={4}
-      />
-
-      {/* Court texture overlay */}
-      <rect
-        x={COURT_SVG.x}
-        y={COURT_SVG.y}
-        width={COURT_SVG.width}
-        height={COURT_SVG.height}
-        fill="url(#court-texture)"
       />
 
       {/* Boundary lines */}

@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import { motion } from 'framer-motion';
 import { COURT_SVG, COURT_WIDTH, COURT_DEPTH } from '@/lib/constants';
 
 interface ZoneOverlayProps {
@@ -38,12 +37,7 @@ export default function ZoneOverlay({
 
   // Focused zone: subtle fill + solid stroke + label
   return (
-    <motion.g
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.3 }}
-    >
+    <g style={{ transition: 'opacity 0.3s ease' }}>
       <rect
         x={svgX}
         y={svgY}
@@ -69,6 +63,6 @@ export default function ZoneOverlay({
       >
         {label}
       </text>
-    </motion.g>
+    </g>
   );
 }
