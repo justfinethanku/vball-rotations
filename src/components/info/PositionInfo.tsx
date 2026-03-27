@@ -2,6 +2,7 @@
 
 import { PlayerRole, RotationNumber, Phase, RotationSystem } from '@/lib/types';
 import { ROLE_COLORS, ROLE_LABELS } from '@/lib/constants';
+import { getPositionTip } from '@/data/position-info';
 
 interface PositionInfoProps {
   role: PlayerRole;
@@ -60,8 +61,9 @@ export function PositionInfo({
 }: PositionInfoProps) {
   const color = ROLE_COLORS[role];
   const label = ROLE_LABELS[role];
-  const tip = ROLE_TIPS[role][phase];
-  const brief = ROLE_BRIEF[role];
+  const positionTip = getPositionTip(system, rotation, phase, role);
+  const tip = positionTip.tip || ROLE_TIPS[role][phase];
+  const brief = positionTip.responsibility || ROLE_BRIEF[role];
 
   const phaseLabel =
     phase === 'serve'

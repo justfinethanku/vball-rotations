@@ -46,13 +46,36 @@ export default function PlayerToken({
         animate={{ y: -(radius + 10) }}
         textAnchor="middle"
         dominantBaseline="central"
-        fill={color}
+        fill={isFocused ? 'white' : color}
         fontSize={10}
         fontWeight="bold"
         style={{ userSelect: 'none', pointerEvents: 'none' }}
       >
-        {short}
+        {isFocused ? 'YOU' : short}
       </motion.text>
+
+      {/* Pulsing glow ring (when focused) */}
+      {isFocused && (
+        <circle
+          r={radius + 4}
+          fill="none"
+          stroke={color}
+          strokeWidth={3}
+        >
+          <animate
+            attributeName="opacity"
+            values="0.2;0.5;0.2"
+            dur="1.5s"
+            repeatCount="indefinite"
+          />
+          <animate
+            attributeName="r"
+            values={`${radius};${radius + 4};${radius}`}
+            dur="1.5s"
+            repeatCount="indefinite"
+          />
+        </circle>
+      )}
 
       {/* Circle */}
       <motion.circle
@@ -85,7 +108,7 @@ export default function PlayerToken({
         fontSize={10}
         style={{ userSelect: 'none', pointerEvents: 'none' }}
       >
-        {name.length > 8 ? name.slice(0, 7) + '\u2026' : name}
+        {name.length > 10 ? name.slice(0, 9) + '\u2026' : name}
       </motion.text>
     </motion.g>
   );

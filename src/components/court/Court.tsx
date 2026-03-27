@@ -29,6 +29,12 @@ export default function Court({ children }: CourtProps) {
       className="w-full h-full max-w-[450px]"
     >
       <defs>
+        {/* Radial gradient for court surface */}
+        <radialGradient id="court-gradient" cx="50%" cy="50%" r="70%">
+          <stop offset="0%" stopColor="#1DB954" />
+          <stop offset="100%" stopColor="#117A32" />
+        </radialGradient>
+
         {/* Net cross-hatching pattern */}
         <pattern
           id={netPatternId}
@@ -47,7 +53,7 @@ export default function Court({ children }: CourtProps) {
         y={COURT_SVG.y}
         width={COURT_SVG.width}
         height={COURT_SVG.height}
-        fill="#16A34A"
+        fill="url(#court-gradient)"
         rx={4}
       />
 
@@ -79,6 +85,37 @@ export default function Court({ children }: CourtProps) {
         width={COURT_SVG.width}
         height={12}
         fill={`url(#${netPatternId})`}
+      />
+
+      {/* NET label */}
+      <text
+        x={COURT_SVG.x + COURT_SVG.width / 2}
+        y={netY}
+        textAnchor="middle"
+        dominantBaseline="central"
+        fill="white"
+        fontSize={8}
+        fontWeight="bold"
+        opacity={0.45}
+        style={{ userSelect: 'none', pointerEvents: 'none' }}
+      >
+        NET
+      </text>
+
+      {/* Antenna marks */}
+      <rect
+        x={COURT_SVG.x - 1}
+        y={netY - 4}
+        width={2}
+        height={8}
+        fill="#EF4444"
+      />
+      <rect
+        x={COURT_SVG.x + COURT_SVG.width - 1}
+        y={netY - 4}
+        width={2}
+        height={8}
+        fill="#EF4444"
       />
 
       {/* Net top/bottom lines */}
@@ -120,7 +157,7 @@ export default function Court({ children }: CourtProps) {
           textAnchor="middle"
           dominantBaseline="central"
           fill="white"
-          opacity={0.18}
+          opacity={0.22}
           fontSize={32}
           fontWeight="bold"
           style={{ userSelect: 'none', pointerEvents: 'none' }}

@@ -57,7 +57,7 @@ export default function PlaybackControls({
   onSpeedChange,
 }: PlaybackControlsProps) {
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex items-center justify-center gap-3">
       {/* Step backward */}
       <button
         onClick={onStepBackward}
