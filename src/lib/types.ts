@@ -48,3 +48,16 @@ export interface RotationState {
   positions: PlayerPosition[];
   zones: ZoneArea[];
 }
+
+export type VariantId = 'standard' | 'spread' | 'slide' | 'reverse';
+
+export type TokenDisplayMode = 'jersey' | 'role' | 'name';
+
+export interface UserPreferences {
+  tokenDisplayMode: TokenDisplayMode;
+  learnMode: boolean;
+  reduceMotion: boolean;
+  courtFlipped: boolean;
+  dismissedHelp: string[];
+  onboardingSeen: boolean;
+}
