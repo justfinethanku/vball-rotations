@@ -82,13 +82,12 @@ export default function PlayerToken({
       )}
 
       {/* Circle */}
-      <motion.circle
-        animate={{ r: radius }}
+      <circle
+        r={radius}
         fill={color}
         fillOpacity={0.85}
         stroke="white"
         strokeWidth={strokeWidth}
-        transition={{ type: 'spring', stiffness: 200, damping: 20 }}
       />
 
       {/* Jersey number */}
