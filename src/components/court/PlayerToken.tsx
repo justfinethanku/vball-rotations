@@ -43,6 +43,16 @@ export default function PlayerToken({
       onClick={onClick}
       style={{ cursor: onClick ? 'pointer' : 'default' }}
     >
+      <defs>
+        <filter id={`shadow-${playerId}`} x="-50%" y="-50%" width="200%" height="200%">
+          <feDropShadow dx="0" dy="2" stdDeviation="3" floodColor="rgba(0,0,0,0.4)" />
+        </filter>
+        <radialGradient id={`grad-${playerId}`} cx="35%" cy="30%">
+          <stop offset="0%" stopColor="white" stopOpacity="0.15" />
+          <stop offset="100%" stopColor="transparent" stopOpacity="0" />
+        </radialGradient>
+      </defs>
+
       {/* "YOU" label above (focused only) */}
       {isFocused && (
         <motion.text
@@ -88,7 +98,9 @@ export default function PlayerToken({
         fillOpacity={0.85}
         stroke="white"
         strokeWidth={strokeWidth}
+        filter={`url(#shadow-${playerId})`}
       />
+      <circle r={radius} fill={`url(#grad-${playerId})`} />
 
       {/* Jersey number */}
       <text

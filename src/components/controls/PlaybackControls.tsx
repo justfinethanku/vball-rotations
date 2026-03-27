@@ -61,7 +61,7 @@ export default function PlaybackControls({
       {/* Step backward */}
       <button
         onClick={onStepBackward}
-        className="p-2 rounded-full text-white hover:bg-white/10 transition-colors"
+        className="btn-press p-2 rounded-full text-white hover:bg-white/10 transition-colors"
         aria-label="Step backward"
       >
         <ChevronLeftIcon />
@@ -70,7 +70,7 @@ export default function PlaybackControls({
       {/* Play / Pause */}
       <button
         onClick={onTogglePlay}
-        className="p-3 rounded-full bg-indigo-500 text-white hover:bg-indigo-600 transition-colors"
+        className="btn-press p-3 rounded-full bg-indigo-500 text-white hover:bg-indigo-600 transition-colors"
         aria-label={isPlaying ? 'Pause' : 'Play'}
       >
         {isPlaying ? <PauseIcon /> : <PlayIcon />}
@@ -79,7 +79,7 @@ export default function PlaybackControls({
       {/* Step forward */}
       <button
         onClick={onStepForward}
-        className="p-2 rounded-full text-white hover:bg-white/10 transition-colors"
+        className="btn-press p-2 rounded-full text-white hover:bg-white/10 transition-colors"
         aria-label="Step forward"
       >
         <ChevronRightIcon />
@@ -91,7 +91,7 @@ export default function PlaybackControls({
           <button
             key={opt.value}
             onClick={() => onSpeedChange(opt.value)}
-            className={`px-2 py-1 text-xs font-medium rounded-md transition-colors ${
+            className={`btn-press px-2 py-1 text-xs font-medium rounded-md transition-colors ${
               speed === opt.value
                 ? 'bg-white text-black'
                 : 'text-white hover:bg-white/10'

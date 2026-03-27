@@ -74,7 +74,7 @@ export function PositionInfo({
 
   return (
     <div
-      className="rounded-xl border bg-gray-900/90 p-3 backdrop-blur"
+      className="rounded-xl border bg-gray-900/80 p-3 backdrop-blur-lg shadow-xl shadow-black/20"
       style={{ borderColor: `${color}33` }}
     >
       {/* Header */}

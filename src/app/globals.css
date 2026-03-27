@@ -46,6 +46,17 @@ body {
   transform: scale(0.95);
 }
 
+/* Custom selection color */
+::selection {
+  background: rgba(99, 102, 241, 0.3);
+}
+
+/* Smooth transitions globally */
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 /* Safe area padding */
 .pb-safe {
   padding-bottom: max(8px, env(safe-area-inset-bottom));
