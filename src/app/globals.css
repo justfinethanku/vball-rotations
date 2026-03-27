@@ -3,6 +3,8 @@
 :root {
   --background: #030712;
   --foreground: #f9fafb;
+  --glass-bg: rgba(15, 23, 42, 0.95);
+  --glass-border: rgba(255, 255, 255, 0.08);
 }
 
 @theme inline {
@@ -17,45 +19,57 @@ body {
   -webkit-tap-highlight-color: transparent;
 }
 
-/* Hide scrollbar on filter chips */
-.hide-scrollbar::-webkit-scrollbar {
-  display: none;
-}
-.hide-scrollbar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
+.hide-scrollbar::-webkit-scrollbar { display: none; }
+.hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-/* Glass panel — solid dark, no backdrop-filter for mobile perf */
 .glass {
-  background: rgba(15, 23, 42, 0.95);
+  background: var(--glass-bg);
+  border-color: var(--glass-border);
 }
 
-/* Gradient fade for floating controls */
 .fade-up {
   background: linear-gradient(to top, rgba(3, 7, 18, 0.95) 40%, rgba(3, 7, 18, 0.6) 70%, transparent 100%);
 }
 
-/* Button press feedback */
-.btn-press {
-  transition: transform 0.1s;
-}
-.btn-press:active {
-  transform: scale(0.95);
+.btn-press:active { opacity: 0.7; }
+
+.focus-ring:focus-visible {
+  outline: 2px solid #818cf8;
+  outline-offset: 2px;
 }
 
-/* Custom selection color */
-::selection {
-  background: rgba(99, 102, 241, 0.3);
-}
+::selection { background: rgba(99, 102, 241, 0.3); }
 
-/* Smooth transitions globally */
 * {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Safe area padding */
-.pb-safe {
-  padding-bottom: max(8px, env(safe-area-inset-bottom));
+.pb-safe { padding-bottom: max(8px, env(safe-area-inset-bottom)); }
+
+@keyframes ghost-fade {
+  0% { opacity: 0.6; }
+  100% { opacity: 0; }
+}
+.ghost-trail {
+  animation: ghost-fade 2s ease-out forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ghost-trail { animation: none; opacity: 0; }
+}
+
+@keyframes slide-down-fade {
+  0% { opacity: 0; transform: translateY(-8px); }
+  10% { opacity: 1; transform: translateY(0); }
+  80% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-4px); }
+}
+.phase-description {
+  animation: slide-down-fade 2.5s ease-out forwards;
+}
+
+.scroll-fade-bottom {
+  mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
 }
