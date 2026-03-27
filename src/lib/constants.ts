@@ -69,3 +69,5 @@ export const DEFAULT_PLAYERS_62 = [
   { id: 'mb2', name: 'MB 2', number: 8, role: 'middle' as const, avatar: 'default' },
   { id: 'lib', name: 'Libero', number: 7, role: 'libero' as const, avatar: 'default' },
 ];
+
+export const FRONT_ROW_THRESHOLD = 3; // y <= 3 means front row in court coords
