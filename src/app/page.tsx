@@ -281,20 +281,6 @@ export default function Home() {
           </span>
         </div>
 
-        <div className="absolute left-1/2 -translate-x-1/2 flex bg-white/8 rounded-full p-0.5">
-          {(['5-1', '6-2'] as const).map(s => (
-            <button
-              key={s}
-              onClick={() => switchSystem(s)}
-              className={`px-3 py-0.5 rounded-full text-xs font-bold btn-press transition-all ${
-                system === s ? 'bg-indigo-500 text-white shadow-md shadow-indigo-500/30' : 'text-gray-400 hover:text-white'
-              }`}
-            >
-              {s}
-            </button>
-          ))}
-        </div>
-
         <div className="flex items-center gap-1">
           <ShareButton onShare={shareUrl} teamName={teamName} system={system} />
           <button onClick={() => setCompareOpen(true)} className="p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 btn-press transition-all" aria-label="Compare">
@@ -320,64 +306,56 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Court SVG — fills the space */}
-          <div className="w-full h-full flex items-center justify-center p-2 md:p-4">
-            <div className="w-full max-w-[640px]">
+          {/* Court SVG — fills the space, minimal padding */}
+          <div className="w-full h-full flex items-center justify-center px-1 md:p-4">
+            <div className="w-full max-w-[700px]">
               <Court>{courtContent}</Court>
             </div>
           </div>
 
           {/* Floating controls (mobile only) — gradient fade over court bottom */}
-          <div className="md:hidden absolute bottom-0 inset-x-0 z-20 fade-up pt-16 pb-safe">
-            <div className="px-3 space-y-1.5">
-              {/* Position filter pills */}
-              <div className="flex gap-1.5 justify-center">
-                <PositionFilter focusedRole={focusedRole} onToggle={toggleFocusedRole} system={system} />
-              </div>
-
-              {/* Control row: nav + rotation + phase dots + play */}
-              <div className="flex items-center justify-center gap-1.5">
-                <button onClick={stepBackward} className="p-1.5 rounded-full text-white/60 hover:text-white hover:bg-white/10 btn-press" aria-label="Back">
-                  <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><path d="M12.5 15L7.5 10L12.5 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+          <div className="md:hidden absolute bottom-0 inset-x-0 z-20 fade-up pt-20 pb-safe">
+            <div className="px-4 space-y-3">
+              {/* Rotation selector — big, easy to tap */}
+              <div className="flex items-center justify-center gap-2">
+                <button onClick={stepBackward} className="w-10 h-10 rounded-full text-white/70 hover:text-white hover:bg-white/10 btn-press flex items-center justify-center" aria-label="Back">
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 15L7.5 10L12.5 5" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
                 </button>
 
-                <div className="flex bg-white/10 rounded-full p-0.5">
+                <div className="flex bg-white/10 rounded-full p-1 gap-0.5">
                   {([1,2,3,4,5,6] as RotationNumber[]).map(r => (
                     <button key={r} onClick={() => setCurrentRotation(r)}
-                      className={`w-7 h-7 rounded-full text-xs font-bold btn-press transition-all ${
-                        currentRotation === r ? 'bg-indigo-500 text-white shadow-md shadow-indigo-500/30' : 'text-gray-400'
+                      className={`w-9 h-9 rounded-full text-sm font-bold btn-press transition-all ${
+                        currentRotation === r ? 'bg-indigo-500 text-white shadow-lg shadow-indigo-500/40' : 'text-gray-400 hover:text-white'
                       }`}>{r}</button>
                   ))}
                 </div>
 
-                <button onClick={stepForward} className="p-1.5 rounded-full text-white/60 hover:text-white hover:bg-white/10 btn-press" aria-label="Forward">
-                  <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><path d="M7.5 5L12.5 10L7.5 15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                <button onClick={stepForward} className="w-10 h-10 rounded-full text-white/70 hover:text-white hover:bg-white/10 btn-press flex items-center justify-center" aria-label="Forward">
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M7.5 5L12.5 10L7.5 15" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
                 </button>
+              </div>
 
-                <div className="w-px h-4 bg-white/10" />
-
-                {/* Phase dots */}
-                <div className="flex items-center gap-1">
+              {/* Phase + Play — second row, well spaced */}
+              <div className="flex items-center justify-center gap-3">
+                {/* Phase buttons — readable text */}
+                <div className="flex bg-white/10 rounded-full p-1 gap-0.5">
                   {(['serve','receive','transition'] as Phase[]).map(p => (
                     <button key={p} onClick={() => setCurrentPhase(p)}
-                      className={`btn-press transition-all ${
-                        currentPhase === p ? 'w-6 h-2 rounded-full bg-indigo-400' : 'w-2 h-2 rounded-full bg-white/25 hover:bg-white/40'
-                      }`}
-                      title={p}
-                      aria-label={p}
-                    />
+                      className={`px-3 h-9 rounded-full text-xs font-semibold btn-press transition-all capitalize ${
+                        currentPhase === p ? 'bg-indigo-500 text-white shadow-lg shadow-indigo-500/40' : 'text-gray-400 hover:text-white'
+                      }`}>{p === 'receive' ? 'Recv' : p === 'transition' ? 'Trans' : p}</button>
                   ))}
                 </div>
 
-                <div className="w-px h-4 bg-white/10" />
-
+                {/* Play button — prominent */}
                 <button onClick={togglePlay}
-                  className="w-8 h-8 rounded-full bg-indigo-500 text-white flex items-center justify-center btn-press shadow-lg shadow-indigo-500/30 hover:bg-indigo-400 transition-all"
+                  className="w-11 h-11 rounded-full bg-indigo-500 text-white flex items-center justify-center btn-press shadow-lg shadow-indigo-500/40 hover:bg-indigo-400 transition-all"
                   aria-label={isPlaying ? 'Pause' : 'Play'}>
                   {isPlaying ? (
-                    <svg width="12" height="12" viewBox="0 0 22 22" fill="none"><rect x="5" y="4" width="4" height="14" rx="1" fill="currentColor"/><rect x="13" y="4" width="4" height="14" rx="1" fill="currentColor"/></svg>
+                    <svg width="16" height="16" viewBox="0 0 22 22" fill="none"><rect x="5" y="4" width="4" height="14" rx="1" fill="currentColor"/><rect x="13" y="4" width="4" height="14" rx="1" fill="currentColor"/></svg>
                   ) : (
-                    <svg width="12" height="12" viewBox="0 0 22 22" fill="none"><path d="M7 4L17 11L7 18V4Z" fill="currentColor"/></svg>
+                    <svg width="16" height="16" viewBox="0 0 22 22" fill="none"><path d="M7 4L17 11L7 18V4Z" fill="currentColor"/></svg>
                   )}
                 </button>
               </div>
