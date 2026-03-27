@@ -37,7 +37,7 @@ export function HelpPopover({ id, title, content, dismissed, onDismiss }: HelpPo
         ?
       </button>
       {isOpen && (
-        <div className="absolute z-50 top-7 left-1/2 -translate-x-1/2 w-64 rounded-xl border border-white/10 bg-gray-800 p-3 shadow-2xl shadow-black/40">
+        <div className="absolute z-50 top-7 left-0 w-64 rounded-xl border border-white/10 bg-gray-800 p-3 shadow-2xl shadow-black/40">
           <h4 className="text-sm font-semibold text-white mb-1">{title}</h4>
           <p className="text-xs text-gray-300 leading-relaxed">{content}</p>
           <button
