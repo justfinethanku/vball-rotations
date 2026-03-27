@@ -74,7 +74,7 @@ export default function PlayerToken({
           />
           <animate
             attributeName="r"
-            values={`${radius};${radius + 4};${radius}`}
+            values={`${radius + 4};${radius + 8};${radius + 4}`}
             dur="1.5s"
             repeatCount="indefinite"
           />
