@@ -93,6 +93,7 @@ function RotationCourtPanel({
                 position={pos.position}
                 isFocused={false}
                 isDimmed={false}
+                displayMode="role"
               />
             );
           })}
