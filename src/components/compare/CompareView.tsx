@@ -13,6 +13,7 @@ interface CompareViewProps {
   onClose: () => void;
   players: Player[];
   system: RotationSystem;
+  useLibero?: boolean;
 }
 
 const ROTATIONS: RotationNumber[] = [1, 2, 3, 4, 5, 6];
@@ -29,6 +30,7 @@ function RotationCourtPanel({
   system,
   rotation,
   phase,
+  useLibero = true,
   onRotationChange,
   onPhaseChange,
 }: {
@@ -37,10 +39,11 @@ function RotationCourtPanel({
   system: RotationSystem;
   rotation: RotationNumber;
   phase: Phase;
+  useLibero?: boolean;
   onRotationChange: (r: RotationNumber) => void;
   onPhaseChange: (p: Phase) => void;
 }) {
-  const { positions } = getRotationState(players, system, rotation, phase);
+  const { positions } = getRotationState(players, system, rotation, phase, useLibero);
 
   return (
     <div className="flex flex-col items-center gap-3 flex-1 min-w-0">
@@ -99,7 +102,7 @@ function RotationCourtPanel({
   );
 }
 
-export function CompareView({ isOpen, onClose, players, system }: CompareViewProps) {
+export function CompareView({ isOpen, onClose, players, system, useLibero = true }: CompareViewProps) {
   const [rotationA, setRotationA] = useState<RotationNumber>(1);
   const [phaseA, setPhaseA] = useState<Phase>('serve');
   const [rotationB, setRotationB] = useState<RotationNumber>(1);
@@ -158,6 +161,7 @@ export function CompareView({ isOpen, onClose, players, system }: CompareViewPro
                 system={system}
                 rotation={rotationA}
                 phase={phaseA}
+                useLibero={useLibero}
                 onRotationChange={setRotationA}
                 onPhaseChange={setPhaseA}
               />
@@ -174,6 +178,7 @@ export function CompareView({ isOpen, onClose, players, system }: CompareViewPro
                 system={system}
                 rotation={rotationB}
                 phase={phaseB}
+                useLibero={useLibero}
                 onRotationChange={setRotationB}
                 onPhaseChange={setPhaseB}
               />

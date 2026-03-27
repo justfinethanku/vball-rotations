@@ -8,15 +8,6 @@ interface CourtProps {
   children: React.ReactNode;
 }
 
-const ZONE_POSITIONS = [
-  { zone: 4, x: COURT_SVG.x + COURT_SVG.width * 0.17, y: COURT_SVG.y + COURT_SVG.height * 0.17 },
-  { zone: 3, x: COURT_SVG.x + COURT_SVG.width * 0.5, y: COURT_SVG.y + COURT_SVG.height * 0.17 },
-  { zone: 2, x: COURT_SVG.x + COURT_SVG.width * 0.83, y: COURT_SVG.y + COURT_SVG.height * 0.17 },
-  { zone: 5, x: COURT_SVG.x + COURT_SVG.width * 0.17, y: COURT_SVG.y + COURT_SVG.height * 0.72 },
-  { zone: 6, x: COURT_SVG.x + COURT_SVG.width * 0.5, y: COURT_SVG.y + COURT_SVG.height * 0.72 },
-  { zone: 1, x: COURT_SVG.x + COURT_SVG.width * 0.83, y: COURT_SVG.y + COURT_SVG.height * 0.72 },
-];
-
 export default function Court({ children }: CourtProps) {
   const attackLineY = getAttackLineY();
   const netY = COURT_SVG.y;
@@ -26,7 +17,7 @@ export default function Court({ children }: CourtProps) {
     <svg
       viewBox={`0 0 ${SVG_WIDTH} ${SVG_HEIGHT}`}
       preserveAspectRatio="xMidYMid meet"
-      className="w-full h-full max-w-[450px]"
+      className="w-full h-auto"
     >
       <defs>
         {/* Radial gradient for court surface */}
@@ -147,24 +138,6 @@ export default function Court({ children }: CourtProps) {
         strokeDasharray="8 4"
         opacity={0.7}
       />
-
-      {/* Zone position numbers */}
-      {ZONE_POSITIONS.map(({ zone, x, y }) => (
-        <text
-          key={zone}
-          x={x}
-          y={y}
-          textAnchor="middle"
-          dominantBaseline="central"
-          fill="white"
-          opacity={0.22}
-          fontSize={32}
-          fontWeight="bold"
-          style={{ userSelect: 'none', pointerEvents: 'none' }}
-        >
-          {zone}
-        </text>
-      ))}
 
       {/* Children (players, arrows, overlays) */}
       {children}

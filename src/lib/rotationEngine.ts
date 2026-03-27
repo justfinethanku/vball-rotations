@@ -43,7 +43,8 @@ export function getRotationState(
   players: Player[],
   system: RotationSystem,
   rotation: RotationNumber,
-  phase: Phase
+  phase: Phase,
+  useLibero: boolean = true
 ): { positions: PlayerPosition[]; zones: ZoneArea[] } {
   const positions: PlayerPosition[] = [];
   const zones: ZoneArea[] = [];
@@ -54,8 +55,8 @@ export function getRotationState(
     const hasLibero = !!playerMap['L'];
 
     for (const [roleKey, courtPos] of Object.entries(data.positions)) {
-      // Skip MB2 when libero is present (libero replaces back-row MB)
-      if (roleKey === 'MB2' && hasLibero) continue;
+      // Skip MB2 when libero is present and useLibero is enabled (libero replaces back-row MB)
+      if (roleKey === 'MB2' && hasLibero && useLibero) continue;
       const player = playerMap[roleKey as RoleKey51];
       if (player) {
         positions.push({

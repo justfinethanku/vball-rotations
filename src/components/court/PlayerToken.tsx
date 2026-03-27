@@ -3,7 +3,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { PlayerRole, CourtPosition } from '@/lib/types';
-import { ROLE_COLORS, ROLE_SHORT } from '@/lib/constants';
+import { ROLE_COLORS } from '@/lib/constants';
 import { courtToSvg } from '@/lib/courtMath';
 
 interface PlayerTokenProps {
@@ -29,9 +29,11 @@ export default function PlayerToken({
 }: PlayerTokenProps) {
   const svg = courtToSvg(position);
   const color = ROLE_COLORS[role];
-  const short = ROLE_SHORT[role];
-  const radius = isFocused ? 28 : 22;
-  const strokeWidth = isFocused ? 4 : 3;
+  const radius = isFocused ? 24 : 20;
+  const strokeWidth = isFocused ? 3.5 : 2.5;
+
+  // Truncate name for compact display (max 6 chars)
+  const shortName = name.length > 8 ? name.slice(0, 7) + '\u2026' : name;
 
   return (
     <motion.g
@@ -41,18 +43,20 @@ export default function PlayerToken({
       onClick={onClick}
       style={{ cursor: onClick ? 'pointer' : 'default' }}
     >
-      {/* Role abbreviation badge */}
-      <motion.text
-        animate={{ y: -(radius + 10) }}
-        textAnchor="middle"
-        dominantBaseline="central"
-        fill={isFocused ? 'white' : color}
-        fontSize={10}
-        fontWeight="bold"
-        style={{ userSelect: 'none', pointerEvents: 'none' }}
-      >
-        {isFocused ? 'YOU' : short}
-      </motion.text>
+      {/* "YOU" label above (focused only) */}
+      {isFocused && (
+        <motion.text
+          animate={{ y: -(radius + 10) }}
+          textAnchor="middle"
+          dominantBaseline="central"
+          fill="white"
+          fontSize={10}
+          fontWeight="bold"
+          style={{ userSelect: 'none', pointerEvents: 'none' }}
+        >
+          YOU
+        </motion.text>
+      )}
 
       {/* Pulsing glow ring (when focused) */}
       {isFocused && (
@@ -99,17 +103,20 @@ export default function PlayerToken({
         {number}
       </text>
 
-      {/* Name below circle */}
-      <motion.text
-        animate={{ y: radius + 14 }}
-        textAnchor="middle"
-        dominantBaseline="central"
-        fill="white"
-        fontSize={10}
-        style={{ userSelect: 'none', pointerEvents: 'none' }}
-      >
-        {name.length > 10 ? name.slice(0, 9) + '\u2026' : name}
-      </motion.text>
+      {/* Name below circle: full name when focused, short name otherwise (hidden when dimmed) */}
+      {!isDimmed && (
+        <motion.text
+          animate={{ y: radius + 12 }}
+          textAnchor="middle"
+          dominantBaseline="central"
+          fill="white"
+          fontSize={isFocused ? 10 : 8}
+          opacity={isFocused ? 1 : 0.7}
+          style={{ userSelect: 'none', pointerEvents: 'none' }}
+        >
+          {isFocused ? (name.length > 10 ? name.slice(0, 9) + '\u2026' : name) : shortName}
+        </motion.text>
+      )}
     </motion.g>
   );
 }

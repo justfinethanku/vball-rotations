@@ -6,7 +6,7 @@ import { getRotationState } from '@/lib/rotationEngine';
 
 const PHASES: Phase[] = ['serve', 'receive', 'transition'];
 
-export function useRotation(players: Player[], system: RotationSystem) {
+export function useRotation(players: Player[], system: RotationSystem, useLibero: boolean = true) {
   const [currentRotation, setCurrentRotation] = useState<RotationNumber>(1);
   const [currentPhase, setCurrentPhase] = useState<Phase>('serve');
   const [focusedRole, setFocusedRole] = useState<PlayerRole | null>(null);
@@ -14,8 +14,8 @@ export function useRotation(players: Player[], system: RotationSystem) {
   const [showZones, setShowZones] = useState(true);
 
   const { positions, zones } = useMemo(
-    () => getRotationState(players, system, currentRotation, currentPhase),
-    [players, system, currentRotation, currentPhase]
+    () => getRotationState(players, system, currentRotation, currentPhase, useLibero),
+    [players, system, currentRotation, currentPhase, useLibero]
   );
 
   const nextPhase = useCallback((): boolean => {
@@ -82,15 +82,15 @@ export function useRotation(players: Player[], system: RotationSystem) {
     const currentPhaseIndex = PHASES.indexOf(currentPhase);
     if (currentPhaseIndex > 0) {
       const prevPhaseVal = PHASES[currentPhaseIndex - 1];
-      return getRotationState(players, system, currentRotation, prevPhaseVal).positions;
+      return getRotationState(players, system, currentRotation, prevPhaseVal, useLibero).positions;
     }
     // First phase of rotation - show from previous rotation's transition
     if (currentRotation > 1) {
       const prevRot = (currentRotation - 1) as RotationNumber;
-      return getRotationState(players, system, prevRot, 'transition').positions;
+      return getRotationState(players, system, prevRot, 'transition', useLibero).positions;
     }
     return null;
-  }, [players, system, currentRotation, currentPhase]);
+  }, [players, system, currentRotation, currentPhase, useLibero]);
 
   return {
     currentRotation,

@@ -5,8 +5,8 @@ export const COURT_DEPTH = 9;
 export const ATTACK_LINE_Y = 3;
 
 export const SVG_WIDTH = 450;
-export const SVG_HEIGHT = 500;
-export const SVG_PADDING = 40;
+export const SVG_HEIGHT = 480;
+export const SVG_PADDING = 30;
 
 export const COURT_SVG = {
   x: SVG_PADDING,

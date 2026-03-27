@@ -10,9 +10,11 @@ interface SetupDrawerProps {
   players: Player[];
   teamName: string;
   system: RotationSystem;
+  useLibero: boolean;
   onUpdatePlayer: (id: string, updates: Partial<Player>) => void;
   onTeamNameChange: (name: string) => void;
   onSystemChange: (system: RotationSystem) => void;
+  onUseLiberoChange: (value: boolean) => void;
 }
 
 export function SetupDrawer({
@@ -21,9 +23,11 @@ export function SetupDrawer({
   players,
   teamName,
   system,
+  useLibero,
   onUpdatePlayer,
   onTeamNameChange,
   onSystemChange,
+  onUseLiberoChange,
 }: SetupDrawerProps) {
   return (
     <AnimatePresence>
@@ -120,6 +124,35 @@ export function SetupDrawer({
                   ))}
                 </div>
               </div>
+
+              {/* Use Libero toggle (5-1 only) */}
+              {system === '5-1' && (
+                <div className="mb-5 flex items-center justify-between">
+                  <div>
+                    <label className="block text-sm font-medium text-white">
+                      Use Libero
+                    </label>
+                    <p className="text-xs text-gray-400">
+                      Libero replaces back-row middle blocker
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    role="switch"
+                    aria-checked={useLibero}
+                    onClick={() => onUseLiberoChange(!useLibero)}
+                    className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full transition-colors duration-200 ease-in-out ${
+                      useLibero ? 'bg-blue-600' : 'bg-gray-600'
+                    }`}
+                  >
+                    <span
+                      className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
+                        useLibero ? 'translate-x-5' : 'translate-x-0.5'
+                      } mt-0.5`}
+                    />
+                  </button>
+                </div>
+              )}
 
               {/* Players list */}
               <div>

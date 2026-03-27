@@ -10,6 +10,7 @@ export function useTeam(initialTeam?: Team) {
     initialTeam?.players ?? [...DEFAULT_PLAYERS]
   );
   const [teamName, setTeamName] = useState(initialTeam?.name ?? 'My Team');
+  const [useLibero, setUseLibero] = useState(initialTeam?.useLibero ?? true);
 
   const updatePlayer = useCallback((id: string, updates: Partial<Player>) => {
     setPlayers(prev => prev.map(p => p.id === id ? { ...p, ...updates } : p));
@@ -73,7 +74,8 @@ export function useTeam(initialTeam?: Team) {
     name: teamName,
     system,
     players,
-  }), [teamName, system, players]);
+    useLibero,
+  }), [teamName, system, players, useLibero]);
 
   return {
     system,
@@ -84,5 +86,7 @@ export function useTeam(initialTeam?: Team) {
     switchSystem,
     getTeam,
     setPlayers,
+    useLibero,
+    setUseLibero,
   };
 }

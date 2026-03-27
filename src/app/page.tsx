@@ -96,6 +96,8 @@ export default function Home() {
     switchSystem,
     getTeam,
     setPlayers,
+    useLibero,
+    setUseLibero,
   } = useTeam();
 
   const {
@@ -103,18 +105,16 @@ export default function Home() {
     currentPhase,
     focusedRole,
     focusedPlayerId,
-    showZones,
     positions,
     zones,
     previousPositions,
     setCurrentRotation,
     setCurrentPhase,
-    setShowZones,
     stepForward,
     stepBackward,
     toggleFocusedRole,
     toggleFocusedPlayer,
-  } = useRotation(players, system);
+  } = useRotation(players, system, useLibero);
 
   const { isPlaying, speed, setSpeed, togglePlay } = useAnimation(stepForward);
 
@@ -123,8 +123,9 @@ export default function Home() {
       switchSystem(team.system);
       setPlayers(team.players);
       setTeamName(team.name);
+      setUseLibero(team.useLibero ?? true);
     },
-    [switchSystem, setPlayers, setTeamName]
+    [switchSystem, setPlayers, setTeamName, setUseLibero]
   );
 
   const { shareUrl } = useUrlState(getTeam, handleLoadTeam);
@@ -192,8 +193,7 @@ export default function Home() {
   const courtContent = (
     <>
       {/* Zone overlays (rendered first, behind players) */}
-      {showZones &&
-        zones.map((zone) => {
+      {zones.map((zone) => {
           // When a specific player is focused, only show that player's zone
           const isZoneFocused = focusedPlayerId
             ? zone.playerId === focusedPlayerId
@@ -273,8 +273,9 @@ export default function Home() {
       {/* Top Bar */}
       <header className="flex items-center justify-between px-3 py-2 border-b border-white/10 bg-gray-900/80 backdrop-blur-sm sticky top-0 z-30">
         <div className="flex items-center gap-2">
-          <h1 className="text-lg font-bold tracking-tight">
-            <span className="text-indigo-400">VBall</span> Rotations
+          <h1 className="text-base font-bold tracking-tight whitespace-nowrap">
+            <span className="text-indigo-400">VB</span>all
+            <span className="hidden sm:inline"> Rotations</span>
           </h1>
           <span className="text-xs text-gray-500 hidden sm:inline">
             {system.toUpperCase()} System
@@ -345,31 +346,9 @@ export default function Home() {
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col md:flex-row md:gap-6 md:px-6 md:py-4 md:max-w-[960px] md:mx-auto md:w-full">
         {/* Court Column */}
-        <div className="flex-1 flex flex-col items-center md:items-end px-2 py-3 md:px-0 md:py-0 min-h-0">
+        <div className="flex-1 flex flex-col items-center md:items-end px-2 py-1 md:px-0 md:py-0">
           <div ref={courtRef} className="w-full max-w-[450px] md:max-w-[550px] relative">
-            {/* Rotation label */}
-            <div className="text-center mb-2">
-              <span className="text-sm text-gray-400">
-                Rotation {currentRotation} &middot;{' '}
-                <span className="capitalize">{currentPhase}</span>
-              </span>
-            </div>
-
             <Court>{courtContent}</Court>
-
-            {/* Zone toggle */}
-            <div className="flex justify-center mt-1">
-              <button
-                onClick={() => setShowZones(!showZones)}
-                className={`text-xs px-3 py-1 rounded-full transition-colors ${
-                  showZones
-                    ? 'bg-white/15 text-white'
-                    : 'bg-white/5 text-gray-500'
-                }`}
-              >
-                {showZones ? 'Hide Zones' : 'Show Zones'}
-              </button>
-            </div>
           </div>
 
           {/* Position Info (mobile, when a role is focused) */}
@@ -386,7 +365,7 @@ export default function Home() {
         </div>
 
         {/* Side Panel (desktop only) */}
-        <div className="hidden md:flex md:flex-col md:w-[320px] md:flex-shrink-0 md:gap-4 md:py-2">
+        <div className="hidden md:flex md:flex-col md:w-[280px] md:flex-shrink-0 md:gap-4 md:py-2">
           <PositionFilter
             focusedRole={focusedRole}
             onToggle={toggleFocusedRole}
@@ -432,7 +411,7 @@ export default function Home() {
 
       {/* Bottom Controls (mobile only) */}
       <div className="md:hidden border-t border-white/10 bg-gray-900/80 backdrop-blur-sm pb-[env(safe-area-inset-bottom)] sticky bottom-0 z-30">
-        <div className="max-w-[500px] mx-auto px-3 py-2 space-y-2">
+        <div className="max-w-[500px] mx-auto px-2 py-1.5 space-y-1.5">
           {/* Row 1: Position Filter */}
           <PositionFilter
             focusedRole={focusedRole}
@@ -440,32 +419,32 @@ export default function Home() {
             system={system}
           />
 
-          {/* Row 2: Compact controls - step back, phase toggle, step forward, play, speed */}
-          <div className="flex items-center justify-center gap-1.5">
+          {/* Row 2: Nav + Rotations + Phase + Play */}
+          <div className="flex items-center justify-center gap-1">
             {/* Step backward */}
             <button
               onClick={stepBackward}
-              className="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg text-white hover:bg-white/10 transition-colors"
+              className="p-1.5 min-w-[36px] min-h-[36px] flex items-center justify-center rounded-lg text-white hover:bg-white/10 transition-colors"
               aria-label="Step backward"
             >
-              <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
+              <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
                 <path d="M12.5 15L7.5 10L12.5 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </button>
 
-            {/* Phase toggle (compact) */}
+            {/* Compact rotation selector (just numbers) */}
             <div className="flex bg-white/10 rounded-lg p-0.5">
-              {(['serve', 'receive', 'transition'] as Phase[]).map((phase) => (
+              {([1, 2, 3, 4, 5, 6] as RotationNumber[]).map((r) => (
                 <button
-                  key={phase}
-                  onClick={() => setCurrentPhase(phase)}
-                  className={`px-2 py-1.5 text-xs font-medium rounded-md transition-colors min-h-[44px] ${
-                    currentPhase === phase
+                  key={r}
+                  onClick={() => setCurrentRotation(r)}
+                  className={`w-[28px] h-[28px] text-xs font-medium rounded-md transition-colors ${
+                    currentRotation === r
                       ? 'bg-indigo-500 text-white'
-                      : 'text-gray-300 hover:bg-white/10'
+                      : 'text-gray-400 hover:bg-white/10'
                   }`}
                 >
-                  {phaseShort[phase]}
+                  {r}
                 </button>
               ))}
             </div>
@@ -473,56 +452,54 @@ export default function Home() {
             {/* Step forward */}
             <button
               onClick={stepForward}
-              className="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg text-white hover:bg-white/10 transition-colors"
+              className="p-1.5 min-w-[36px] min-h-[36px] flex items-center justify-center rounded-lg text-white hover:bg-white/10 transition-colors"
               aria-label="Step forward"
             >
-              <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
+              <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
                 <path d="M7.5 5L12.5 10L7.5 15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </button>
 
             {/* Divider */}
-            <div className="w-px h-6 bg-white/15 mx-0.5" />
+            <div className="w-px h-5 bg-white/15" />
+
+            {/* Phase toggle (compact) */}
+            <div className="flex bg-white/10 rounded-lg p-0.5">
+              {(['serve', 'receive', 'transition'] as Phase[]).map((phase) => (
+                <button
+                  key={phase}
+                  onClick={() => setCurrentPhase(phase)}
+                  className={`px-1.5 py-1 text-[10px] font-medium rounded-md transition-colors min-h-[28px] ${
+                    currentPhase === phase
+                      ? 'bg-indigo-500 text-white'
+                      : 'text-gray-400 hover:bg-white/10'
+                  }`}
+                >
+                  {phaseShort[phase]}
+                </button>
+              ))}
+            </div>
+
+            {/* Divider */}
+            <div className="w-px h-5 bg-white/15" />
 
             {/* Play/Pause */}
             <button
               onClick={togglePlay}
-              className="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full bg-indigo-500 text-white hover:bg-indigo-600 transition-colors"
+              className="p-1.5 min-w-[36px] min-h-[36px] flex items-center justify-center rounded-full bg-indigo-500 text-white hover:bg-indigo-600 transition-colors"
               aria-label={isPlaying ? 'Pause' : 'Play'}
             >
               {isPlaying ? (
-                <svg width="18" height="18" viewBox="0 0 22 22" fill="none">
+                <svg width="14" height="14" viewBox="0 0 22 22" fill="none">
                   <rect x="5" y="4" width="4" height="14" rx="1" fill="currentColor" />
                   <rect x="13" y="4" width="4" height="14" rx="1" fill="currentColor" />
                 </svg>
               ) : (
-                <svg width="18" height="18" viewBox="0 0 22 22" fill="none">
+                <svg width="14" height="14" viewBox="0 0 22 22" fill="none">
                   <path d="M6 4L18 11L6 18V4Z" fill="currentColor" />
                 </svg>
               )}
             </button>
-
-            {/* Speed cycle button */}
-            <button
-              onClick={() => {
-                const speeds: ('slow' | 'medium' | 'fast')[] = ['slow', 'medium', 'fast'];
-                const labels: Record<string, string> = { slow: '0.5x', medium: '1x', fast: '2x' };
-                const idx = speeds.indexOf(speed);
-                setSpeed(speeds[(idx + 1) % speeds.length]);
-              }}
-              className="px-2 py-1.5 min-w-[44px] min-h-[44px] flex items-center justify-center text-xs font-medium rounded-lg bg-white/10 text-gray-300 hover:bg-white/20 transition-colors"
-              aria-label="Cycle speed"
-            >
-              {{ slow: '0.5x', medium: '1x', fast: '2x' }[speed]}
-            </button>
-          </div>
-
-          {/* Rotation selector (compact, below controls) */}
-          <div className="flex justify-center">
-            <RotationSelector
-              current={currentRotation}
-              onChange={setCurrentRotation}
-            />
           </div>
         </div>
       </div>
@@ -533,6 +510,7 @@ export default function Home() {
         onClose={() => setCompareOpen(false)}
         players={players}
         system={system}
+        useLibero={useLibero}
       />
 
       {/* Setup Drawer */}
@@ -542,9 +520,11 @@ export default function Home() {
         players={players}
         teamName={teamName}
         system={system}
+        useLibero={useLibero}
         onUpdatePlayer={updatePlayer}
         onTeamNameChange={setTeamName}
         onSystemChange={switchSystem}
+        onUseLiberoChange={setUseLibero}
       />
 
       {/* Onboarding overlay for first-time users */}

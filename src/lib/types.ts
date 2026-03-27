@@ -18,6 +18,7 @@ export interface Team {
   name: string;
   system: RotationSystem;
   players: Player[];
+  useLibero: boolean;
 }
 
 export interface CourtPosition {

@@ -20,7 +20,7 @@ export default function PositionFilter({ focusedRole, onToggle, system }: Positi
   const roles = system === '6-2' ? roles62 : roles51;
 
   return (
-    <div className="overflow-x-auto flex gap-2 pb-1">
+    <div className="overflow-x-auto flex gap-1.5 pb-1 md:flex-wrap md:overflow-visible">
       {/* All chip */}
       <button
         onClick={() => onToggle(null)}
