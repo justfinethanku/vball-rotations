@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { QRCodeSVG } from 'qrcode.react';
 
@@ -15,6 +15,14 @@ export function ShareButton({ onShare, teamName, system }: ShareButtonProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [shareUrl, setShareUrl] = useState('');
   const [copied, setCopied] = useState(false);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    if (error) {
+      const t = setTimeout(() => setError(''), 3000);
+      return () => clearTimeout(t);
+    }
+  }, [error]);
 
   const handleOpen = useCallback(async () => {
     if (isLoading) return;
@@ -24,6 +32,7 @@ export function ShareButton({ onShare, teamName, system }: ShareButtonProps) {
       setShareUrl(url);
       setIsOpen(true);
     } catch {
+      setError('Failed to generate share link');
       console.warn('Failed to generate share URL');
     } finally {
       setIsLoading(false);
@@ -50,28 +59,42 @@ export function ShareButton({ onShare, teamName, system }: ShareButtonProps) {
 
   return (
     <>
-      <button
-        onClick={handleOpen}
-        disabled={isLoading}
-        className="p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 btn-press transition-all disabled:opacity-50"
-        aria-label="Share"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="16"
-          height="16"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
+      <div className="relative">
+        <button
+          onClick={handleOpen}
+          disabled={isLoading}
+          className="focus-ring p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 btn-press transition-all disabled:opacity-50"
+          aria-label="Share"
         >
-          <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
-          <polyline points="16 6 12 2 8 6" />
-          <line x1="12" y1="2" x2="12" y2="15" />
-        </svg>
-      </button>
+          {isLoading ? (
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="animate-spin">
+              <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" opacity="0.25" />
+              <path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+            </svg>
+          ) : (
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
+              <polyline points="16 6 12 2 8 6" />
+              <line x1="12" y1="2" x2="12" y2="15" />
+            </svg>
+          )}
+        </button>
+        {error && (
+          <span className="absolute top-full left-1/2 -translate-x-1/2 mt-1 whitespace-nowrap rounded bg-red-600/90 px-2 py-1 text-xs text-white shadow-lg">
+            {error}
+          </span>
+        )}
+      </div>
 
       <AnimatePresence>
         {isOpen && (

@@ -45,7 +45,7 @@ export function PlayerCard({ player, onUpdate }: PlayerCardProps) {
             type="text"
             value={player.name}
             onChange={(e) => onUpdate({ name: e.target.value })}
-            className="w-full rounded border border-white/10 bg-white/5 px-2 py-1.5 text-sm text-white outline-none transition-colors focus:border-blue-500"
+            className="w-full rounded-lg border border-white/10 bg-white/5 px-2 py-1.5 text-sm text-white outline-none transition-colors focus:border-indigo-500"
           />
         </div>
 
@@ -61,7 +61,7 @@ export function PlayerCard({ player, onUpdate }: PlayerCardProps) {
             maxLength={3}
             min={0}
             max={999}
-            className="w-full rounded border border-white/10 bg-white/5 px-2 py-1.5 text-center text-sm text-white outline-none transition-colors focus:border-blue-500"
+            className="w-full rounded-lg border border-white/10 bg-white/5 px-2 py-1.5 text-center text-sm text-white outline-none transition-colors focus:border-indigo-500"
           />
         </div>
 
@@ -71,7 +71,7 @@ export function PlayerCard({ player, onUpdate }: PlayerCardProps) {
           <select
             value={player.role}
             onChange={(e) => onUpdate({ role: e.target.value as PlayerRole })}
-            className="w-full rounded border border-white/10 bg-white/5 px-2 py-1.5 text-sm text-white outline-none transition-colors focus:border-blue-500"
+            className="w-full rounded-lg border border-white/10 bg-white/5 px-2 py-1.5 text-sm text-white outline-none transition-colors focus:border-indigo-500"
           >
             {ALL_ROLES.map((role) => (
               <option key={role} value={role} className="bg-gray-900">
