@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useCallback, useMemo } from 'react';
-import { RotationNumber, Phase, PlayerRole, Player, RotationSystem, PlayerPosition, ZoneArea, VariantId } from '@/lib/types';
+import { RotationNumber, Phase, PlayerRole, Player, RotationSystem, PlayerPosition, VariantId } from '@/lib/types';
 import { getRotationState } from '@/lib/rotationEngine';
 
 const PHASES: Phase[] = ['serve', 'receive', 'transition'];

@@ -1,4 +1,4 @@
-import { Player, PlayerRole, RotationNumber, Phase, RotationSystem, PlayerPosition, ZoneArea, VariantId } from './types';
+import { Player, RotationNumber, Phase, RotationSystem, PlayerPosition, ZoneArea, VariantId } from './types';
 import { rotations51, RoleKey51 } from '@/data/rotations-5-1';
 import { rotations62, RoleKey62 } from '@/data/rotations-6-2';
 import { rotations51Spread } from '@/data/rotations-5-1-spread';

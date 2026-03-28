@@ -61,15 +61,10 @@ export default function Home() {
   const [setupOpen, setSetupOpen] = useState(false);
   const [compareOpen, setCompareOpen] = useState(false);
   const [glossaryOpen, setGlossaryOpen] = useState(false);
-  const [showWelcome, setShowWelcome] = useState(false);
-  const [phaseDescKey, setPhaseDescKey] = useState(0);
+  const [forceShowWelcome, setForceShowWelcome] = useState(false);
   const courtRef = useRef<HTMLDivElement>(null);
 
   const prefs = usePreferences();
-
-  useEffect(() => {
-    if (!prefs.onboardingSeen) setShowWelcome(true);
-  }, [prefs.onboardingSeen]);
 
   const {
     system, players, teamName, setTeamName, updatePlayer, switchSystem,
@@ -85,14 +80,9 @@ export default function Home() {
 
   const { isPlaying, speed, setSpeed, togglePlay } = useAnimation(stepForward);
 
-  // Track phase changes for description animation
-  const prevPhaseRef = useRef(currentPhase);
-  useEffect(() => {
-    if (prevPhaseRef.current !== currentPhase) {
-      prevPhaseRef.current = currentPhase;
-      setPhaseDescKey(k => k + 1);
-    }
-  }, [currentPhase]);
+  // Key that changes whenever phase changes, to restart CSS animation
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const phaseDescKey = useMemo(() => `${currentPhase}-${Date.now()}`, [currentPhase, currentRotation]);
 
   const handleLoadTeam = useCallback((team: Team) => {
     switchSystem(team.system);
@@ -132,7 +122,7 @@ export default function Home() {
 
   const handleReplayOnboarding = useCallback(() => {
     setSetupOpen(false);
-    setShowWelcome(true);
+    setForceShowWelcome(true);
   }, []);
 
   // Focused player data for info sheet
@@ -447,8 +437,8 @@ export default function Home() {
         onCourtFlipToggle={prefs.toggleCourtFlipped}
         onResetPlayers={handleResetPlayers} onReplayOnboarding={handleReplayOnboarding} />
       <Glossary isOpen={glossaryOpen} onClose={() => setGlossaryOpen(false)} />
-      {showWelcome && (
-        <Welcome onComplete={() => { setShowWelcome(false); prefs.markOnboardingSeen(); }} />
+      {(!prefs.onboardingSeen || forceShowWelcome) && (
+        <Welcome onComplete={() => { setForceShowWelcome(false); prefs.markOnboardingSeen(); }} />
       )}
     </main>
   );

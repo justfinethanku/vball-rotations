@@ -14,16 +14,8 @@ interface ZoneOverlayProps {
   isFocusedZone: boolean;
 }
 
-export default function ZoneOverlay({
-  x,
-  y,
-  width,
-  height,
-  color,
-  label,
-  isDimmed,
-  isFocusedZone,
-}: ZoneOverlayProps) {
+export default function ZoneOverlay(props: ZoneOverlayProps) {
+  const { x, y, width, height, color, label, isFocusedZone } = props;
   // Convert court coordinates to SVG coordinates
   const svgX = COURT_SVG.x + (x / COURT_WIDTH) * COURT_SVG.width;
   const svgY = COURT_SVG.y + (y / COURT_DEPTH) * COURT_SVG.height;

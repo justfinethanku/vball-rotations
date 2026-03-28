@@ -1,4 +1,4 @@
-import { UserPreferences, TokenDisplayMode } from './types';
+import { UserPreferences } from './types';
 
 const STORAGE_KEY = 'vball-preferences';
 

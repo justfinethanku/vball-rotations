@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Player, RotationSystem, RotationNumber, Phase } from '@/lib/types';
 import { getRotationState } from '@/lib/rotationEngine';
-import { ROLE_COLORS } from '@/lib/constants';
 import Court from '@/components/court/Court';
 import PlayerToken from '@/components/court/PlayerToken';
 

@@ -3,7 +3,6 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { Player, RotationSystem, VariantId, TokenDisplayMode } from '@/lib/types';
 import { getVariantsForSystem } from '@/data/variants';
-import { DEFAULT_PLAYERS, DEFAULT_PLAYERS_62 } from '@/lib/constants';
 import { PlayerCard } from './PlayerCard';
 
 interface SetupDrawerProps {

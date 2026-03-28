@@ -17,17 +17,8 @@ interface PlayerTokenProps {
   onClick?: () => void;
 }
 
-export default function PlayerToken({
-  playerId,
-  name,
-  number,
-  role,
-  position,
-  isFocused,
-  isDimmed,
-  displayMode,
-  onClick,
-}: PlayerTokenProps) {
+export default function PlayerToken(props: PlayerTokenProps) {
+  const { name, number, role, position, isFocused, isDimmed, displayMode, onClick } = props;
   const svg = courtToSvg(position);
   const color = ROLE_COLORS[role];
   const radius = isFocused ? 24 : 20;

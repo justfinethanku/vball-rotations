@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { SVG_WIDTH, SVG_HEIGHT, SVG_PADDING, COURT_SVG } from '@/lib/constants';
+import { SVG_WIDTH, SVG_HEIGHT, COURT_SVG } from '@/lib/constants';
 import { getAttackLineY } from '@/lib/courtMath';
 
 interface CourtProps {

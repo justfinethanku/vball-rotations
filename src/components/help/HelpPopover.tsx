@@ -52,7 +52,7 @@ export function HelpPopover({ id, title, content, dismissed, onDismiss, children
             onClick={() => { onDismiss(id); setIsOpen(false); }}
             className="mt-2 text-[10px] text-gray-500 hover:text-gray-300 transition-colors"
           >
-            Got it, don't show again
+            Got it, don&apos;t show again
           </button>
         </div>
       )}
