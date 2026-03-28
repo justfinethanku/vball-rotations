@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, type ReactNode } from 'react';
 
 interface HelpPopoverProps {
   id: string;
@@ -8,9 +8,10 @@ interface HelpPopoverProps {
   content: string;
   dismissed: boolean;
   onDismiss: (id: string) => void;
+  children?: ReactNode;
 }
 
-export function HelpPopover({ id, title, content, dismissed, onDismiss }: HelpPopoverProps) {
+export function HelpPopover({ id, title, content, dismissed, onDismiss, children }: HelpPopoverProps) {
   const [isOpen, setIsOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -25,19 +26,26 @@ export function HelpPopover({ id, title, content, dismissed, onDismiss }: HelpPo
     return () => document.removeEventListener('mousedown', handleClick);
   }, [isOpen]);
 
-  if (dismissed) return null;
+  if (dismissed) {
+    return children ? (
+      <div className="flex items-center gap-1.5 mb-1.5">{children}</div>
+    ) : null;
+  }
 
   return (
-    <div className="relative inline-flex" ref={ref}>
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="focus-ring flex h-5 w-5 items-center justify-center rounded-full bg-white/10 text-gray-400 text-[10px] font-bold hover:bg-white/20 hover:text-white transition-colors"
-        aria-label={`Help: ${title}`}
-      >
-        ?
-      </button>
+    <div ref={ref}>
+      <div className="flex items-center gap-1.5 mb-1.5">
+        {children}
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          className="focus-ring flex h-5 w-5 items-center justify-center rounded-full bg-white/10 text-gray-400 text-[10px] font-bold hover:bg-white/20 hover:text-white transition-colors"
+          aria-label={`Help: ${title}`}
+        >
+          ?
+        </button>
+      </div>
       {isOpen && (
-        <div className="absolute z-50 top-7 left-0 w-64 rounded-xl border border-white/10 bg-gray-800 p-3 shadow-2xl shadow-black/40">
+        <div className="rounded-xl border border-white/10 bg-gray-800 p-3 shadow-lg mb-2">
           <h4 className="text-sm font-semibold text-white mb-1">{title}</h4>
           <p className="text-xs text-gray-300 leading-relaxed">{content}</p>
           <button

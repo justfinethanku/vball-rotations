@@ -5,7 +5,6 @@ import { Phase } from '@/lib/types';
 interface PhaseStepperProps {
   current: Phase;
   onChange: (phase: Phase) => void;
-  movedCount?: number;
   compact?: boolean;
 }
 
@@ -21,7 +20,7 @@ const PHASE_LABELS_SHORT: Record<Phase, string> = {
   transition: 'Trans',
 };
 
-export default function PhaseStepper({ current, onChange, movedCount, compact = false }: PhaseStepperProps) {
+export default function PhaseStepper({ current, onChange, compact = false }: PhaseStepperProps) {
   const labels = compact ? PHASE_LABELS_SHORT : PHASE_LABELS;
   const currentIdx = PHASES.indexOf(current);
 
@@ -64,11 +63,6 @@ export default function PhaseStepper({ current, onChange, movedCount, compact = 
           );
         })}
       </div>
-      {movedCount !== undefined && movedCount > 0 && (
-        <span className="text-[10px] text-amber-400/80">
-          {movedCount} player{movedCount !== 1 ? 's' : ''} moved
-        </span>
-      )}
     </div>
   );
 }

@@ -78,7 +78,7 @@ export default function Home() {
 
   const {
     currentRotation, currentPhase, focusedRole, focusedPlayerId,
-    positions, zones, previousPositions, movedPlayers, nextPhasePositions,
+    positions, zones, previousPositions, nextPhasePositions,
     setCurrentRotation, setCurrentPhase, stepForward, stepBackward,
     toggleFocusedRole, toggleFocusedPlayer,
   } = useRotation(players, system, useLibero, variant);
@@ -269,9 +269,9 @@ export default function Home() {
       <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
 
         {/* ── Court Area ── */}
-        <div className="flex-1 relative overflow-hidden flex items-center justify-center" ref={courtRef}>
+        <div className="flex-1 relative overflow-hidden flex flex-col" ref={courtRef}>
           {/* State pill */}
-          <div className="absolute top-2 left-1/2 -translate-x-1/2 z-20 pointer-events-none">
+          <div className="absolute top-1 md:top-2 left-1/2 -translate-x-1/2 z-20 pointer-events-none">
             <div className="glass rounded-full px-4 py-1.5 border border-white/10 shadow-lg shadow-black/20 flex items-center gap-2">
               <span className="text-xs font-bold text-indigo-300">R{currentRotation}</span>
               <span className="w-px h-3 bg-white/20" />
@@ -289,13 +289,13 @@ export default function Home() {
 
           {/* Phase description */}
           {prefs.learnMode ? (
-            <div className="absolute top-12 left-1/2 -translate-x-1/2 z-20 pointer-events-none">
+            <div className="absolute top-10 md:top-12 left-1/2 -translate-x-1/2 z-20 pointer-events-none">
               <div className="glass rounded-lg px-3 py-1 border border-white/10 text-xs text-gray-300">
                 {PHASE_DESCRIPTIONS[currentPhase]}
               </div>
             </div>
           ) : (
-            <div key={phaseDescKey} className="absolute top-12 left-1/2 -translate-x-1/2 z-20 pointer-events-none phase-description">
+            <div key={phaseDescKey} className="absolute top-10 md:top-12 left-1/2 -translate-x-1/2 z-20 pointer-events-none phase-description">
               <div className="glass rounded-lg px-3 py-1 border border-white/10 text-xs text-gray-300">
                 {PHASE_DESCRIPTIONS[currentPhase]}
               </div>
@@ -303,15 +303,63 @@ export default function Home() {
           )}
 
           {/* Court SVG */}
-          <div className="w-full h-full flex items-center justify-center px-1 md:p-4"
+          <div className="w-full md:flex-1 md:flex md:items-center md:justify-center pt-1 md:pt-0 px-0 md:px-4 shrink-0 md:shrink md:min-h-0 md:overflow-hidden"
             style={prefs.courtFlipped ? { transform: 'scaleY(-1)' } : undefined}>
             <div className="w-full max-w-[900px]">
               <Court>{courtContent}</Court>
             </div>
           </div>
 
-          {/* Court legend */}
-          <div className="absolute bottom-0 md:bottom-2 left-2 z-10 pointer-events-none hidden md:flex items-center gap-3 text-[10px] text-gray-500">
+          {/* Court legend — mobile (shown below court) */}
+          <div className="md:hidden flex items-center justify-center gap-3 text-[10px] text-gray-500 py-1.5 shrink-0">
+            <span className="flex items-center gap-1">
+              <span className="inline-block w-2.5 h-2.5 rounded-full border-[1.5px] border-gray-400" />
+              Front row
+            </span>
+            <span className="flex items-center gap-1">
+              <span className="inline-block w-2.5 h-2.5 rounded-full border-[1.5px] border-dashed border-gray-400" />
+              Back row
+            </span>
+            <span className="flex items-center gap-1">
+              <span className="inline-block w-2.5 h-2.5 border-[1.5px] border-gray-400" style={{ borderRadius: 2 }} />
+              Libero
+            </span>
+          </div>
+
+          {/* Spacer — pushes controls to bottom */}
+          <div className="flex-1 md:hidden" />
+
+          {/* ── Mobile controls ── */}
+          <div className="md:hidden px-3 py-2.5 space-y-2 pb-safe shrink-0 glass border-t border-white/5">
+            <div className="flex items-center justify-center gap-2">
+              <button onClick={stepBackward}
+                className="focus-ring w-11 h-11 rounded-full text-white/70 hover:text-white hover:bg-white/10 btn-press flex items-center justify-center"
+                aria-label="Previous">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 15L7.5 10L12.5 5" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+              </button>
+              <RotationCarousel current={currentRotation} onChange={setCurrentRotation} system={system} compact />
+              <button onClick={stepForward}
+                className="focus-ring w-11 h-11 rounded-full text-white/70 hover:text-white hover:bg-white/10 btn-press flex items-center justify-center"
+                aria-label="Next">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M7.5 5L12.5 10L7.5 15" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+              </button>
+            </div>
+            <div className="flex items-center justify-center gap-3">
+              <PhaseStepper current={currentPhase} onChange={setCurrentPhase} compact />
+              <button onClick={togglePlay}
+                className="focus-ring w-11 h-11 rounded-full bg-indigo-500 text-white flex items-center justify-center btn-press shadow-lg shadow-indigo-500/40 hover:bg-indigo-400 transition-all"
+                aria-label={isPlaying ? 'Pause' : 'Play'}>
+                {isPlaying ? (
+                  <svg width="16" height="16" viewBox="0 0 22 22" fill="none"><rect x="5" y="4" width="4" height="14" rx="1" fill="currentColor"/><rect x="13" y="4" width="4" height="14" rx="1" fill="currentColor"/></svg>
+                ) : (
+                  <svg width="16" height="16" viewBox="0 0 22 22" fill="none"><path d="M7 4L17 11L7 18V4Z" fill="currentColor"/></svg>
+                )}
+              </button>
+            </div>
+          </div>
+
+          {/* Court legend — desktop (absolute positioned) */}
+          <div className="absolute bottom-2 left-2 z-10 pointer-events-none hidden md:flex items-center gap-3 text-[10px] text-gray-500">
             <span className="flex items-center gap-1">
               <span className="inline-block w-3 h-3 rounded-full border-2 border-gray-400" />
               Front row
@@ -326,40 +374,9 @@ export default function Home() {
             </span>
           </div>
 
-          {/* ── Mobile floating controls ── */}
-          <div className="md:hidden absolute bottom-0 inset-x-0 z-20 fade-up pt-16 pb-safe pointer-events-none">
-            <div className="px-4 space-y-2.5 pointer-events-auto">
-              <div className="flex items-center justify-center gap-2">
-                <button onClick={stepBackward}
-                  className="focus-ring w-11 h-11 rounded-full text-white/70 hover:text-white hover:bg-white/10 btn-press flex items-center justify-center"
-                  aria-label="Previous">
-                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 15L7.5 10L12.5 5" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                </button>
-                <RotationCarousel current={currentRotation} onChange={setCurrentRotation} system={system} compact />
-                <button onClick={stepForward}
-                  className="focus-ring w-11 h-11 rounded-full text-white/70 hover:text-white hover:bg-white/10 btn-press flex items-center justify-center"
-                  aria-label="Next">
-                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M7.5 5L12.5 10L7.5 15" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                </button>
-              </div>
-              <div className="flex items-center justify-center gap-3">
-                <PhaseStepper current={currentPhase} onChange={setCurrentPhase} movedCount={movedPlayers} compact />
-                <button onClick={togglePlay}
-                  className="focus-ring w-11 h-11 rounded-full bg-indigo-500 text-white flex items-center justify-center btn-press shadow-lg shadow-indigo-500/40 hover:bg-indigo-400 transition-all"
-                  aria-label={isPlaying ? 'Pause' : 'Play'}>
-                  {isPlaying ? (
-                    <svg width="16" height="16" viewBox="0 0 22 22" fill="none"><rect x="5" y="4" width="4" height="14" rx="1" fill="currentColor"/><rect x="13" y="4" width="4" height="14" rx="1" fill="currentColor"/></svg>
-                  ) : (
-                    <svg width="16" height="16" viewBox="0 0 22 22" fill="none"><path d="M7 4L17 11L7 18V4Z" fill="currentColor"/></svg>
-                  )}
-                </button>
-              </div>
-            </div>
-          </div>
-
           {/* Player Info — mobile */}
           {focusedRole && (
-            <div className="md:hidden absolute bottom-40 left-2 right-2 z-20">
+            <div className="md:hidden absolute bottom-28 left-2 right-2 z-20">
               <PlayerInfoSheet
                 player={focusedPlayer} role={focusedRole}
                 rotation={currentRotation} phase={currentPhase} system={system}
@@ -370,39 +387,36 @@ export default function Home() {
         </div>
 
         {/* ── Side Panel (desktop) ── */}
-        <div className="hidden md:flex md:flex-col md:w-[300px] md:shrink-0 border-l border-white/5 glass overflow-y-auto">
+        <div className="hidden md:flex md:flex-col md:w-[300px] md:shrink-0 border-l border-white/5 glass overflow-y-auto overflow-x-hidden">
           <div className="p-4 space-y-4">
             <div>
-              <div className="flex items-center gap-1.5 mb-1.5">
+              <HelpPopover id="help-positions" title="What are positions?"
+                content="Each player has a role: Setter runs the offense, Outside Hitters attack from the left, Middle Blockers are quick attackers and primary blockers, Opposite attacks from the right, and the Libero is a defensive specialist."
+                dismissed={prefs.dismissedHelp.includes('help-positions')}
+                onDismiss={prefs.dismissHelp}>
                 <span className="text-xs uppercase tracking-wider text-gray-500 font-medium">Position</span>
-                <HelpPopover id="help-positions" title="What are positions?"
-                  content="Each player has a role: Setter runs the offense, Outside Hitters attack from the left, Middle Blockers are quick attackers and primary blockers, Opposite attacks from the right, and the Libero is a defensive specialist."
-                  dismissed={prefs.dismissedHelp.includes('help-positions')}
-                  onDismiss={prefs.dismissHelp} />
-              </div>
+              </HelpPopover>
               <PositionFilter focusedRole={focusedRole} onToggle={toggleFocusedRole} system={system} />
             </div>
 
             <div>
-              <div className="flex items-center gap-1.5 mb-1.5">
+              <HelpPopover id="help-rotations" title="What are rotations?"
+                content="There are 6 rotations in volleyball. Teams rotate clockwise each time they win serve back. Each rotation determines the serving order and which players are in the front vs back row."
+                dismissed={prefs.dismissedHelp.includes('help-rotations')}
+                onDismiss={prefs.dismissHelp}>
                 <span className="text-xs uppercase tracking-wider text-gray-500 font-medium">Rotation</span>
-                <HelpPopover id="help-rotations" title="What are rotations?"
-                  content="There are 6 rotations in volleyball. Teams rotate clockwise each time they win serve back. Each rotation determines the serving order and which players are in the front vs back row."
-                  dismissed={prefs.dismissedHelp.includes('help-rotations')}
-                  onDismiss={prefs.dismissHelp} />
-              </div>
+              </HelpPopover>
               <RotationCarousel current={currentRotation} onChange={setCurrentRotation} system={system} />
             </div>
 
             <div>
-              <div className="flex items-center gap-1.5 mb-1.5">
+              <HelpPopover id="help-phases" title="What are phases?"
+                content="Each rotation has 3 phases. Serve: where players stand for the serve. Receive: formation for passing. Transition: where players move to attack or defend after the ball is in play."
+                dismissed={prefs.dismissedHelp.includes('help-phases')}
+                onDismiss={prefs.dismissHelp}>
                 <span className="text-xs uppercase tracking-wider text-gray-500 font-medium">Phase</span>
-                <HelpPopover id="help-phases" title="What are phases?"
-                  content="Each rotation has 3 phases. Serve: where players stand for the serve. Receive: formation for passing. Transition: where players move to attack or defend after the ball is in play."
-                  dismissed={prefs.dismissedHelp.includes('help-phases')}
-                  onDismiss={prefs.dismissHelp} />
-              </div>
-              <PhaseStepper current={currentPhase} onChange={setCurrentPhase} movedCount={movedPlayers} />
+              </HelpPopover>
+              <PhaseStepper current={currentPhase} onChange={setCurrentPhase} />
             </div>
 
             <PlaybackControls isPlaying={isPlaying} speed={speed}
