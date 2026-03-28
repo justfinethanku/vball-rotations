@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://vball.mohammadhameed.dev/sitemap.xml
