@@ -69,6 +69,8 @@ export function getRotationState(
     for (const [roleKey, courtPos] of Object.entries(data.positions)) {
       // Skip MB2 when libero is present and useLibero is enabled (libero replaces back-row MB)
       if (roleKey === 'MB2' && hasLibero && useLibero) continue;
+      // Skip libero when useLibero is disabled
+      if (roleKey === 'L' && !useLibero) continue;
       const player = playerMap[roleKey as RoleKey51];
       if (player) {
         positions.push({
@@ -80,6 +82,7 @@ export function getRotationState(
     }
 
     for (const zone of data.zones) {
+      if (zone.role === 'L' && !useLibero) continue;
       const player = playerMap[zone.role as RoleKey51];
       if (player) {
         zones.push({
