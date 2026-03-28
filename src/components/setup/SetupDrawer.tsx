@@ -1,6 +1,6 @@
 'use client';
 
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, motion, useDragControls } from 'framer-motion';
 import { Player, RotationSystem, VariantId, TokenDisplayMode } from '@/lib/types';
 import { getVariantsForSystem } from '@/data/variants';
 import { PlayerCard } from './PlayerCard';
@@ -80,6 +80,7 @@ export function SetupDrawer({
   onResetPlayers,
   onReplayOnboarding,
 }: SetupDrawerProps) {
+  const dragControls = useDragControls();
   const variants = getVariantsForSystem(system);
 
   const tokenModes: { value: TokenDisplayMode; label: string }[] = [
@@ -110,19 +111,20 @@ export function SetupDrawer({
             exit={{ y: '100%' }}
             transition={{ type: 'spring', damping: 30, stiffness: 300 }}
             drag="y"
+            dragControls={dragControls}
+            dragListener={false}
             dragConstraints={{ top: 0 }}
             dragElastic={0.2}
             onDragEnd={(_, info) => {
               if (info.offset.y > 100) onClose();
             }}
           >
-            {/* Drag handle */}
-            <div className="flex justify-center pt-3 pb-1">
-              <div className="h-1.5 w-10 rounded-full bg-gray-400" />
-            </div>
-
-            {/* Header */}
-            <div className="flex items-center justify-between px-5 py-3">
+            {/* Drag handle + Header — drag region */}
+            <div onPointerDown={(e) => dragControls.start(e)} style={{ touchAction: 'none' }}>
+              <div className="flex justify-center pt-3 pb-1 cursor-grab active:cursor-grabbing">
+                <div className="h-1.5 w-10 rounded-full bg-gray-400" />
+              </div>
+              <div className="flex items-center justify-between px-5 py-3">
               <h2 className="text-lg font-semibold text-white">Settings</h2>
               <button
                 onClick={onClose}
@@ -144,10 +146,11 @@ export function SetupDrawer({
                   <line x1="6" y1="6" x2="18" y2="18" />
                 </svg>
               </button>
+              </div>
             </div>
 
             {/* Scrollable content */}
-            <div className="scroll-fade-bottom flex-1 overflow-y-auto px-5 pb-8">
+            <div className="scroll-fade-bottom flex-1 overflow-y-auto px-5" style={{ paddingBottom: `max(2rem, calc(2rem + env(safe-area-inset-bottom, 0px)))` }}>
               {/* Team name */}
               <div className="mb-4">
                 <label className="mb-1 block text-xs text-gray-400">
