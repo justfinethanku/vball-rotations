@@ -12,10 +12,11 @@ interface ZoneOverlayProps {
   label: string;
   isDimmed: boolean;
   isFocusedZone: boolean;
+  isSubstituted?: boolean;
 }
 
 export default function ZoneOverlay(props: ZoneOverlayProps) {
-  const { x, y, width, height, color, label, isFocusedZone } = props;
+  const { x, y, width, height, color, label, isFocusedZone, isSubstituted } = props;
   // Convert court coordinates to SVG coordinates
   const svgX = COURT_SVG.x + (x / COURT_WIDTH) * COURT_SVG.width;
   const svgY = COURT_SVG.y + (y / COURT_DEPTH) * COURT_SVG.height;
@@ -25,6 +26,41 @@ export default function ZoneOverlay(props: ZoneOverlayProps) {
   // Only show zone overlay when it's the focused zone
   if (!isFocusedZone) {
     return null;
+  }
+
+  // Substituted zone: dashed border, dimmer fill, informational style
+  if (isSubstituted) {
+    return (
+      <g style={{ transition: 'opacity 0.3s ease' }}>
+        <rect
+          x={svgX}
+          y={svgY}
+          width={svgW}
+          height={svgH}
+          rx={4}
+          fill={color}
+          fillOpacity={0.05}
+          stroke={color}
+          strokeWidth={1}
+          strokeOpacity={0.3}
+          strokeDasharray="4 3"
+        />
+        <text
+          x={svgX + svgW / 2}
+          y={svgY + svgH / 2}
+          textAnchor="middle"
+          dominantBaseline="central"
+          fill={color}
+          fontSize={8}
+          fontWeight="500"
+          opacity={0.5}
+          fontStyle="italic"
+          style={{ userSelect: 'none', pointerEvents: 'none' }}
+        >
+          {label}
+        </text>
+      </g>
+    );
   }
 
   // Focused zone: subtle fill + solid stroke + label

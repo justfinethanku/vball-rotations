@@ -40,6 +40,7 @@ export interface ZoneArea {
   width: number;
   height: number;
   label: string;
+  isSubstituted?: boolean;
 }
 
 export interface RotationState {

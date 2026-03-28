@@ -109,20 +109,47 @@ export function getRotationState(
         });
       }
     }
+
+    // Add informational zone for back-row MB replaced by libero
+    if (backRowMB && useLibero) {
+      const liberoZone = data.zones.find(z => z.role === 'L');
+      const mbPlayer = playerMap[backRowMB];
+      if (liberoZone && mbPlayer) {
+        zones.push({
+          playerId: mbPlayer.id,
+          role: mbPlayer.role,
+          x: liberoZone.x,
+          y: liberoZone.y,
+          width: liberoZone.width,
+          height: liberoZone.height,
+          label: 'Off Court (Libero Sub)',
+          isSubstituted: true,
+        });
+      }
+    }
   } else {
     const data = rotations62[rotation][phase];
     const playerMap = mapPlayersToRoles62(players);
     const hasLibero = !!playerMap['L'];
 
-    for (const [roleKey, courtPos] of Object.entries(data.positions)) {
-      // Skip MB that libero replaces in back row
-      if ((roleKey === 'MB1' || roleKey === 'MB2') && hasLibero) {
-        // Check if this MB position overlaps with libero (same spot = replaced)
-        const liberoPos = data.positions['L'];
-        if (liberoPos && Math.abs(courtPos.x - liberoPos.x) < 1 && Math.abs(courtPos.y - liberoPos.y) < 1) {
-          continue;
+    // Determine which MB the libero replaces in 6-2
+    let backRowMB62: RoleKey62 | null = null;
+    if (hasLibero) {
+      const liberoPos = data.positions['L'];
+      if (liberoPos) {
+        for (const mbKey of ['MB1', 'MB2'] as RoleKey62[]) {
+          const mbPos = data.positions[mbKey];
+          if (mbPos && Math.abs(mbPos.x - liberoPos.x) < 1 && Math.abs(mbPos.y - liberoPos.y) < 1) {
+            backRowMB62 = mbKey;
+            break;
+          }
         }
       }
+    }
+
+    for (const [roleKey, courtPos] of Object.entries(data.positions)) {
+      if (roleKey === backRowMB62) continue;
+      if (roleKey === 'L' && !hasLibero) continue;
       const player = playerMap[roleKey as RoleKey62];
       if (player) {
         positions.push({
@@ -144,6 +171,24 @@ export function getRotationState(
           width: zone.width,
           height: zone.height,
           label: zone.label,
+        });
+      }
+    }
+
+    // Add informational zone for back-row MB replaced by libero
+    if (backRowMB62) {
+      const liberoZone = data.zones.find(z => z.role === 'L');
+      const mbPlayer = playerMap[backRowMB62];
+      if (liberoZone && mbPlayer) {
+        zones.push({
+          playerId: mbPlayer.id,
+          role: mbPlayer.role,
+          x: liberoZone.x,
+          y: liberoZone.y,
+          width: liberoZone.width,
+          height: liberoZone.height,
+          label: 'Off Court (Libero Sub)',
+          isSubstituted: true,
         });
       }
     }

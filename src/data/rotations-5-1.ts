@@ -153,6 +153,7 @@ export const rotations51: RotationMap = {
       },
       zones: [
         { role: 'OH2', x: 0, y: 0, width: 3, height: 3, label: 'Outside Attack' },
+        { role: 'OH1', x: 3, y: 0, width: 3, height: 3, label: 'Slide Attack' },
         { role: 'MB1', x: 3, y: 0, width: 3, height: 3, label: 'Middle Attack' },
         { role: 'S',   x: 6, y: 0, width: 3, height: 2, label: 'Set at Net' },
         { role: 'L',   x: 0, y: 4, width: 3, height: 5, label: 'Back Left Defense' },

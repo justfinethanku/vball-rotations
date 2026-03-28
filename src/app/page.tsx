@@ -157,10 +157,11 @@ export default function Home() {
           ? zone.playerId !== focusedPlayerId
           : focusedRole !== null && zone.role !== focusedRole;
         return (
-          <ZoneOverlay key={`zone-${zone.playerId}`}
+          <ZoneOverlay key={`zone-${zone.playerId}${zone.isSubstituted ? '-sub' : ''}`}
             x={zone.x} y={zone.y} width={zone.width} height={zone.height}
             color={ROLE_COLORS[zone.role]} label={zone.label}
-            isDimmed={isDimmed} isFocusedZone={isZoneFocused} />
+            isDimmed={isDimmed} isFocusedZone={isZoneFocused}
+            isSubstituted={zone.isSubstituted} />
         );
       })}
 
