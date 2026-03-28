@@ -22,6 +22,10 @@ export const rotations51Spread: RotationMap = (() => {
       const setterX = trans.positions.S.x;
       trans.positions.MB1.x = setterX + (trans.positions.MB1.x > setterX ? -0.5 : 0.5);
     }
+    if (trans.positions.MB2.y <= 3) {
+      const setterX = trans.positions.S.x;
+      trans.positions.MB2.x = setterX + (trans.positions.MB2.x > setterX ? -0.5 : 0.5);
+    }
   }
   return data;
 })();

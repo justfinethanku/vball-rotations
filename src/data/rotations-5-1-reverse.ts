@@ -14,6 +14,7 @@ export const rotations51Reverse: RotationMap = (() => {
     const trans = data[rot].transition;
     const recv = data[rot].receive;
 
+    // Setter penetrates to left side (zone 4) instead of right
     if (trans.positions.S.y <= 3) {
       trans.positions.S.x = 2;
     } else if (trans.positions.S.y <= 4) {
@@ -22,7 +23,8 @@ export const rotations51Reverse: RotationMap = (() => {
     }
 
     if (recv.positions.S.y > 3) {
-      recv.positions.S.x = Math.max(1.5, recv.positions.S.x - 2);
+      recv.positions.S.x = 2;
+      recv.positions.S.y = Math.min(recv.positions.S.y, 4);
     }
   }
   return data;

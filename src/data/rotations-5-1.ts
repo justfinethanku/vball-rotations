@@ -145,7 +145,7 @@ export const rotations51: RotationMap = {
       positions: {
         OPP: { x: 7, y: 5.5 },    // back right defense
         MB1: { x: 4.5, y: 1 },    // middle attack at net
-        OH1: { x: 4.5, y: 1.5 },  // near center
+        OH1: { x: 6, y: 1.5 },    // right-side attack option
         OH2: { x: 1, y: 1.5 },    // outside attack
         MB2: { x: 1.5, y: 7 },    // back left defense
         S:   { x: 7, y: 1 },      // setting at net
@@ -153,7 +153,7 @@ export const rotations51: RotationMap = {
       },
       zones: [
         { role: 'OH2', x: 0, y: 0, width: 3, height: 3, label: 'Outside Attack' },
-        { role: 'OH1', x: 3, y: 0, width: 3, height: 3, label: 'Slide Attack' },
+        { role: 'OH1', x: 5, y: 0, width: 3, height: 3, label: 'Right-Side Hit' },
         { role: 'MB1', x: 3, y: 0, width: 3, height: 3, label: 'Middle Attack' },
         { role: 'S',   x: 6, y: 0, width: 3, height: 2, label: 'Set at Net' },
         { role: 'L',   x: 0, y: 4, width: 3, height: 5, label: 'Back Left Defense' },
@@ -275,11 +275,11 @@ export const rotations51: RotationMap = {
     },
     transition: {
       positions: {
-        OH1: { x: 1.5, y: 6 },    // back left defense
+        OH1: { x: 7, y: 6 },      // back right defense (Z1)
         OH2: { x: 1, y: 1.5 },    // outside attack left
         MB2: { x: 4.5, y: 1 },    // middle attack at net
         S:   { x: 7, y: 1 },      // set at net
-        OPP: { x: 2, y: 5.5 },    // back row defense
+        OPP: { x: 2, y: 5.5 },    // back left defense (Z5)
         MB1: { x: 4.5, y: 7 },    // back row defense
         L:   { x: 4.5, y: 6 },    // back center defense
       },
@@ -289,7 +289,7 @@ export const rotations51: RotationMap = {
         { role: 'S',   x: 6, y: 0, width: 3, height: 2, label: 'Set at Net' },
         { role: 'OPP', x: 0, y: 4, width: 3, height: 5, label: 'Back Left Defense' },
         { role: 'L',   x: 3, y: 4, width: 3, height: 5, label: 'Back Center Defense' },
-        { role: 'OH1', x: 0, y: 4, width: 3, height: 5, label: 'Back Left Cover' },
+        { role: 'OH1', x: 6, y: 4, width: 3, height: 5, label: 'Back Right Defense' },
       ],
     },
   },
@@ -398,7 +398,7 @@ export const rotations51: RotationMap = {
       },
       zones: [
         { role: 'MB1', x: 0, y: 0, width: 3, height: 3, label: 'Hit Zone 4' },
-        { role: 'OPP', x: 3, y: 0, width: 3, height: 3, label: 'Quick Attack' },
+        { role: 'OPP', x: 3, y: 0, width: 3, height: 3, label: 'Hit Zone 3' },
         { role: 'S',   x: 6, y: 0, width: 3, height: 2, label: 'Set at Net' },
         { role: 'OH1', x: 0, y: 4.5, width: 3, height: 4.5, label: 'Receive Left' },
         { role: 'L',   x: 3, y: 4.5, width: 3, height: 4.5, label: 'Receive Middle' },
@@ -412,8 +412,8 @@ export const rotations51: RotationMap = {
         OPP: { x: 8, y: 2 },      // right side attack
         MB1: { x: 4.5, y: 1 },    // middle attack at net
         OH1: { x: 1.5, y: 6 },    // back left defense
-        OH2: { x: 4.5, y: 6 },    // back center defense
-        L:   { x: 4.5, y: 6 },    // back center defense
+        OH2: { x: 5.5, y: 6 },    // back right-center defense
+        L:   { x: 3.5, y: 6 },    // back left-center defense
       },
       zones: [
         { role: 'MB1', x: 0, y: 0, width: 3, height: 3, label: 'Middle Attack' },

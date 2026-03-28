@@ -17,6 +17,11 @@ export const rotations51Slide: RotationMap = (() => {
       trans.positions.MB1.x = Math.min(8.5, setterX + 1.5);
       trans.positions.MB1.y = 1.5;
     }
+    if (trans.positions.MB2.y <= 3) {
+      const setterX = trans.positions.S.x;
+      trans.positions.MB2.x = Math.min(8.5, setterX + 1.5);
+      trans.positions.MB2.y = 1.5;
+    }
   }
   return data;
 })();
