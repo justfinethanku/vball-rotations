@@ -310,6 +310,22 @@ export default function Home() {
             </div>
           </div>
 
+          {/* Court legend */}
+          <div className="absolute bottom-0 md:bottom-2 left-2 z-10 pointer-events-none hidden md:flex items-center gap-3 text-[10px] text-gray-500">
+            <span className="flex items-center gap-1">
+              <span className="inline-block w-3 h-3 rounded-full border-2 border-gray-400" />
+              Front row
+            </span>
+            <span className="flex items-center gap-1">
+              <span className="inline-block w-3 h-3 rounded-full border-2 border-dashed border-gray-400" />
+              Back row
+            </span>
+            <span className="flex items-center gap-1">
+              <span className="inline-block w-3 h-3 rounded border-2 border-gray-400" style={{ borderRadius: 3 }} />
+              Libero
+            </span>
+          </div>
+
           {/* ── Mobile floating controls ── */}
           <div className="md:hidden absolute bottom-0 inset-x-0 z-20 fade-up pt-16 pb-safe pointer-events-none">
             <div className="px-4 space-y-2.5 pointer-events-auto">
