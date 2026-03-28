@@ -44,6 +44,7 @@ export default function PlayerToken(props: PlayerTokenProps) {
 
   return (
     <motion.g
+      initial={false}
       animate={{ x: svg.x, y: svg.y, opacity: isDimmed ? 0.4 : 1 }}
       transition={{ type: 'spring', stiffness: 200, damping: 25 }}
       onClick={onClick}
