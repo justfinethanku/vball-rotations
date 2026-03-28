@@ -66,9 +66,22 @@ export function getRotationState(
     const playerMap = mapPlayersToRoles51(players);
     const hasLibero = !!playerMap['L'];
 
+    // Determine which MB the libero replaces (the one sharing position with L)
+    const liberoPos = data.positions['L'];
+    let backRowMB: RoleKey51 | null = null;
+    if (hasLibero && useLibero && liberoPos) {
+      for (const mbKey of ['MB1', 'MB2'] as RoleKey51[]) {
+        const mbPos = data.positions[mbKey];
+        if (mbPos && Math.abs(mbPos.x - liberoPos.x) < 1.5 && Math.abs(mbPos.y - liberoPos.y) < 1.5) {
+          backRowMB = mbKey;
+          break;
+        }
+      }
+    }
+
     for (const [roleKey, courtPos] of Object.entries(data.positions)) {
-      // Skip MB2 when libero is present and useLibero is enabled (libero replaces back-row MB)
-      if (roleKey === 'MB2' && hasLibero && useLibero) continue;
+      // Skip the back-row MB when libero replaces them
+      if (roleKey === backRowMB) continue;
       // Skip libero when useLibero is disabled
       if (roleKey === 'L' && !useLibero) continue;
       const player = playerMap[roleKey as RoleKey51];
