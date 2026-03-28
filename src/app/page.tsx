@@ -22,6 +22,7 @@ import Welcome from '@/components/onboarding/Welcome';
 import { PlayerInfoSheet } from '@/components/info/PlayerInfoSheet';
 import { HelpPopover } from '@/components/help/HelpPopover';
 import { Glossary } from '@/components/help/Glossary';
+import { SupportModal } from '@/components/help/SupportModal';
 import { ROLE_COLORS, DEFAULT_PLAYERS, DEFAULT_PLAYERS_62 } from '@/lib/constants';
 import { Team, RotationNumber, Phase } from '@/lib/types';
 
@@ -61,8 +62,21 @@ export default function Home() {
   const [setupOpen, setSetupOpen] = useState(false);
   const [compareOpen, setCompareOpen] = useState(false);
   const [glossaryOpen, setGlossaryOpen] = useState(false);
+  const [supportOpen, setSupportOpen] = useState(false);
   const [forceShowWelcome, setForceShowWelcome] = useState(false);
+  const [showThankYou, setShowThankYou] = useState(false);
   const courtRef = useRef<HTMLDivElement>(null);
+
+  // Detect Stripe redirect with thank you
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.has('donated')) {
+      setShowThankYou(true);
+      window.history.replaceState({}, '', window.location.pathname);
+      const timer = setTimeout(() => setShowThankYou(false), 5000);
+      return () => clearTimeout(timer);
+    }
+  }, []);
 
   const prefs = usePreferences();
 
@@ -240,6 +254,13 @@ export default function Home() {
             </svg>
           </button>
           <ShareButton onShare={shareUrl} teamName={teamName} system={system} />
+          <button onClick={() => setSupportOpen(true)}
+            className="focus-ring p-1.5 rounded-lg text-gray-400 hover:text-pink-400 hover:bg-white/10 btn-press transition-all"
+            aria-label="Support">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+            </svg>
+          </button>
           <button onClick={() => setCompareOpen(true)}
             className="focus-ring p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 btn-press transition-all"
             aria-label="Compare">
@@ -399,8 +420,21 @@ export default function Home() {
         onCourtFlipToggle={prefs.toggleCourtFlipped}
         onResetPlayers={handleResetPlayers} onReplayOnboarding={handleReplayOnboarding} />
       <Glossary isOpen={glossaryOpen} onClose={() => setGlossaryOpen(false)} />
+      <SupportModal isOpen={supportOpen} onClose={() => setSupportOpen(false)} />
       {(!prefs.onboardingSeen || forceShowWelcome) && (
         <Welcome onComplete={() => { setForceShowWelcome(false); prefs.markOnboardingSeen(); }} />
+      )}
+
+      {/* Thank you toast */}
+      {showThankYou && (
+        <div className="fixed top-16 left-1/2 -translate-x-1/2 z-50 animate-fade-in">
+          <div className="glass rounded-xl px-5 py-3 border border-indigo-500/30 shadow-lg shadow-indigo-500/20 flex items-center gap-2">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#818cf8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+            </svg>
+            <span className="text-sm font-medium text-white">Thank you for your support!</span>
+          </div>
+        </div>
       )}
     </main>
   );
