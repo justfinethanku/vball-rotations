@@ -80,9 +80,8 @@ export default function Home() {
 
   const { isPlaying, speed, setSpeed, togglePlay } = useAnimation(stepForward);
 
-  // Key that changes whenever phase changes, to restart CSS animation
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const phaseDescKey = useMemo(() => `${currentPhase}-${Date.now()}`, [currentPhase, currentRotation]);
+  // Key that changes whenever phase/rotation changes, to restart CSS animation
+  const phaseDescKey = `${currentRotation}-${currentPhase}`;
 
   const handleLoadTeam = useCallback((team: Team) => {
     switchSystem(team.system);
@@ -277,15 +276,9 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Phase description */}
-          {prefs.learnMode ? (
+          {/* Phase description — only shown in learn mode */}
+          {prefs.learnMode && (
             <div className="absolute top-10 md:top-12 left-1/2 -translate-x-1/2 z-20 pointer-events-none">
-              <div className="glass rounded-lg px-3 py-1 border border-white/10 text-xs text-gray-300">
-                {PHASE_DESCRIPTIONS[currentPhase]}
-              </div>
-            </div>
-          ) : (
-            <div key={phaseDescKey} className="absolute top-10 md:top-12 left-1/2 -translate-x-1/2 z-20 pointer-events-none phase-description">
               <div className="glass rounded-lg px-3 py-1 border border-white/10 text-xs text-gray-300">
                 {PHASE_DESCRIPTIONS[currentPhase]}
               </div>
@@ -298,22 +291,6 @@ export default function Home() {
             <div className="w-full max-w-[900px]">
               <Court>{courtContent}</Court>
             </div>
-          </div>
-
-          {/* Court legend — mobile (shown below court) */}
-          <div className="md:hidden flex items-center justify-center gap-3 text-[10px] text-gray-500 py-1.5 shrink-0">
-            <span className="flex items-center gap-1">
-              <span className="inline-block w-2.5 h-2.5 rounded-full border-[1.5px] border-gray-400" />
-              Front row
-            </span>
-            <span className="flex items-center gap-1">
-              <span className="inline-block w-2.5 h-2.5 rounded-full border-[1.5px] border-dashed border-gray-400" />
-              Back row
-            </span>
-            <span className="flex items-center gap-1">
-              <span className="inline-block w-2.5 h-2.5 border-[1.5px] border-gray-400" style={{ borderRadius: 2 }} />
-              Libero
-            </span>
           </div>
 
           {/* Spacer — pushes controls to bottom */}
@@ -346,22 +323,6 @@ export default function Home() {
                 )}
               </button>
             </div>
-          </div>
-
-          {/* Court legend — desktop (absolute positioned) */}
-          <div className="absolute bottom-2 left-2 z-10 pointer-events-none hidden md:flex items-center gap-3 text-[10px] text-gray-500">
-            <span className="flex items-center gap-1">
-              <span className="inline-block w-3 h-3 rounded-full border-2 border-gray-400" />
-              Front row
-            </span>
-            <span className="flex items-center gap-1">
-              <span className="inline-block w-3 h-3 rounded-full border-2 border-dashed border-gray-400" />
-              Back row
-            </span>
-            <span className="flex items-center gap-1">
-              <span className="inline-block w-3 h-3 rounded border-2 border-gray-400" style={{ borderRadius: 3 }} />
-              Libero
-            </span>
           </div>
 
           {/* Player Info — mobile */}

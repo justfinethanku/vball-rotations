@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { motion } from 'framer-motion';
 import { PlayerRole, CourtPosition, TokenDisplayMode } from '@/lib/types';
 import { ROLE_COLORS, ROLE_SHORT, FRONT_ROW_THRESHOLD } from '@/lib/constants';
 import { courtToSvg } from '@/lib/courtMath';
@@ -42,11 +43,11 @@ export default function PlayerToken(props: PlayerTokenProps) {
   const youLabelY = Math.max(-(radius + 8), -45);
 
   return (
-    <g
-      transform={`translate(${svg.x}, ${svg.y})`}
-      opacity={isDimmed ? 0.4 : 1}
+    <motion.g
+      animate={{ x: svg.x, y: svg.y, opacity: isDimmed ? 0.4 : 1 }}
+      transition={{ type: 'spring', stiffness: 200, damping: 25 }}
       onClick={onClick}
-      style={{ cursor: onClick ? 'pointer' : 'default', transition: 'transform 0.4s ease, opacity 0.4s ease' }}
+      style={{ cursor: onClick ? 'pointer' : 'default' }}
       role="button"
       aria-label={`${name}, ${ROLE_SHORT[role]}, ${isBackRow ? 'back' : 'front'} row`}
       tabIndex={onClick ? 0 : undefined}
@@ -87,6 +88,6 @@ export default function PlayerToken(props: PlayerTokenProps) {
           {isFocused ? (name.length > 10 ? name.slice(0, 9) + '\u2026' : name) : labelName}
         </text>
       )}
-    </g>
+    </motion.g>
   );
 }

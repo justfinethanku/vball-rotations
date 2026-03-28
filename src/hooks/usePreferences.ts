@@ -4,12 +4,28 @@ import { useState, useCallback, useEffect } from 'react';
 import { UserPreferences, TokenDisplayMode } from '@/lib/types';
 import { loadPreferences, savePreferences } from '@/lib/preferences';
 
+const DEFAULTS: UserPreferences = {
+  tokenDisplayMode: 'role',
+  learnMode: false,
+  reduceMotion: false,
+  courtFlipped: false,
+  dismissedHelp: [],
+  onboardingSeen: false,
+};
+
 export function usePreferences() {
-  const [prefs, setPrefs] = useState<UserPreferences>(loadPreferences);
+  const [prefs, setPrefs] = useState<UserPreferences>(DEFAULTS);
+  const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
-    savePreferences(prefs);
-  }, [prefs]);
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- hydration: must load localStorage after mount
+    setPrefs(loadPreferences());
+    setHydrated(true);
+  }, []);
+
+  useEffect(() => {
+    if (hydrated) savePreferences(prefs);
+  }, [prefs, hydrated]);
 
   const setTokenDisplayMode = useCallback((mode: TokenDisplayMode) => {
     setPrefs(p => ({ ...p, tokenDisplayMode: mode }));
