@@ -24,7 +24,7 @@ import { HelpPopover } from '@/components/help/HelpPopover';
 import { Glossary } from '@/components/help/Glossary';
 import { SupportModal } from '@/components/help/SupportModal';
 import { ROLE_COLORS, DEFAULT_PLAYERS, DEFAULT_PLAYERS_62 } from '@/lib/constants';
-import { Team, RotationNumber, Phase } from '@/lib/types';
+import { RotationNumber, Phase } from '@/lib/types';
 
 // ─── Swipe hook ────────────────────────────────────────────────
 function useSwipe(
@@ -71,6 +71,7 @@ export default function Home() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.has('donated')) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- reads one-time URL state after hydration
       setShowThankYou(true);
       window.history.replaceState({}, '', window.location.pathname);
       const timer = setTimeout(() => setShowThankYou(false), 5000);
@@ -97,14 +98,7 @@ export default function Home() {
   // Key that changes whenever phase/rotation changes, to restart CSS animation
   const phaseDescKey = `${currentRotation}-${currentPhase}`;
 
-  const handleLoadTeam = useCallback((team: Team) => {
-    switchSystem(team.system);
-    setPlayers(team.players);
-    setTeamName(team.name);
-    setUseLibero(team.useLibero ?? true);
-  }, [switchSystem, setPlayers, setTeamName, setUseLibero]);
-
-  const { shareUrl } = useUrlState(getTeam, handleLoadTeam);
+  const { shareUrl } = useUrlState(getTeam);
 
   useSwipe(courtRef, stepForward, stepBackward);
 

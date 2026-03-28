@@ -19,6 +19,7 @@ export interface Team {
   system: RotationSystem;
   players: Player[];
   useLibero: boolean;
+  variant?: VariantId;
 }
 
 export interface CourtPosition {
