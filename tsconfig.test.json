@@ -1,0 +1,16 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "incremental": false,
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "rootDir": "./src",
+    "outDir": "./.test-build"
+  },
+  "include": [
+    "src/lib/urlCodec.ts",
+    "src/lib/rotationEngine.ts",
+    "src/lib/constants.ts"
+  ]
+}

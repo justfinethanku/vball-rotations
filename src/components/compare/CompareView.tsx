@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Player, RotationSystem, RotationNumber, Phase } from '@/lib/types';
+import { Player, RotationSystem, RotationNumber, Phase, VariantId } from '@/lib/types';
 import { getRotationState } from '@/lib/rotationEngine';
 import Court from '@/components/court/Court';
 import PlayerToken from '@/components/court/PlayerToken';
@@ -13,6 +13,7 @@ interface CompareViewProps {
   players: Player[];
   system: RotationSystem;
   useLibero?: boolean;
+  variant?: VariantId;
 }
 
 const ROTATIONS: RotationNumber[] = [1, 2, 3, 4, 5, 6];
@@ -30,6 +31,7 @@ function RotationCourtPanel({
   rotation,
   phase,
   useLibero = true,
+  variant = 'standard',
   onRotationChange,
   onPhaseChange,
 }: {
@@ -39,10 +41,11 @@ function RotationCourtPanel({
   rotation: RotationNumber;
   phase: Phase;
   useLibero?: boolean;
+  variant?: VariantId;
   onRotationChange: (r: RotationNumber) => void;
   onPhaseChange: (p: Phase) => void;
 }) {
-  const { positions } = getRotationState(players, system, rotation, phase, useLibero);
+  const { positions } = getRotationState(players, system, rotation, phase, useLibero, variant);
 
   return (
     <div className="flex flex-col items-center gap-3 flex-1 min-w-0">
@@ -102,7 +105,7 @@ function RotationCourtPanel({
   );
 }
 
-export function CompareView({ isOpen, onClose, players, system, useLibero = true }: CompareViewProps) {
+export function CompareView({ isOpen, onClose, players, system, useLibero = true, variant = 'standard' }: CompareViewProps) {
   const [rotationA, setRotationA] = useState<RotationNumber>(1);
   const [phaseA, setPhaseA] = useState<Phase>('serve');
   const [rotationB, setRotationB] = useState<RotationNumber>(1);
@@ -162,6 +165,7 @@ export function CompareView({ isOpen, onClose, players, system, useLibero = true
                 rotation={rotationA}
                 phase={phaseA}
                 useLibero={useLibero}
+                variant={variant}
                 onRotationChange={setRotationA}
                 onPhaseChange={setPhaseA}
               />
@@ -179,6 +183,7 @@ export function CompareView({ isOpen, onClose, players, system, useLibero = true
                 rotation={rotationB}
                 phase={phaseB}
                 useLibero={useLibero}
+                variant={variant}
                 onRotationChange={setRotationB}
                 onPhaseChange={setPhaseB}
               />

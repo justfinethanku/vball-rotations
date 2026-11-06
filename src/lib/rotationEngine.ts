@@ -1,9 +1,9 @@
-import { Player, RotationNumber, Phase, RotationSystem, PlayerPosition, ZoneArea, VariantId } from './types';
-import { rotations51, RoleKey51 } from '@/data/rotations-5-1';
-import { rotations62, RoleKey62 } from '@/data/rotations-6-2';
-import { rotations51Spread } from '@/data/rotations-5-1-spread';
-import { rotations51Slide } from '@/data/rotations-5-1-slide';
-import { rotations51Reverse } from '@/data/rotations-5-1-reverse';
+import { Player, PlayerRole, RotationNumber, Phase, RotationSystem, PlayerPosition, ZoneArea, VariantId } from './types';
+import { rotations51, RoleKey51 } from '../data/rotations-5-1';
+import { rotations62, RoleKey62 } from '../data/rotations-6-2';
+import { rotations51Spread } from '../data/rotations-5-1-spread';
+import { rotations51Slide } from '../data/rotations-5-1-slide';
+import { rotations51Reverse } from '../data/rotations-5-1-reverse';
 
 const VARIANT_DATA: Record<VariantId, typeof rotations51> = {
   standard: rotations51,
@@ -12,41 +12,31 @@ const VARIANT_DATA: Record<VariantId, typeof rotations51> = {
   reverse: rotations51Reverse,
 };
 
-function mapPlayersToRoles51(players: Player[]): Record<RoleKey51, Player | undefined> {
-  const mapping: Partial<Record<RoleKey51, Player>> = {};
-  const setters = players.filter(p => p.role === 'setter');
-  const outsides = players.filter(p => p.role === 'outside');
-  const middles = players.filter(p => p.role === 'middle');
-  const opposites = players.filter(p => p.role === 'opposite');
-  const liberos = players.filter(p => p.role === 'libero');
+type RoleKey = RoleKey51 | RoleKey62;
 
-  if (setters[0]) mapping['S'] = setters[0];
-  if (outsides[0]) mapping['OH1'] = outsides[0];
-  if (outsides[1]) mapping['OH2'] = outsides[1];
-  if (middles[0]) mapping['MB1'] = middles[0];
-  if (middles[1]) mapping['MB2'] = middles[1];
-  if (opposites[0]) mapping['OPP'] = opposites[0];
-  if (liberos[0]) mapping['L'] = liberos[0];
+// Each formation slot takes the nth player of its role in roster order.
+const ROLE_SLOTS: Record<RotationSystem, [RoleKey, PlayerRole, number][]> = {
+  '5-1': [
+    ['S', 'setter', 0], ['OH1', 'outside', 0], ['OH2', 'outside', 1],
+    ['MB1', 'middle', 0], ['MB2', 'middle', 1], ['OPP', 'opposite', 0], ['L', 'libero', 0],
+  ],
+  '6-2': [
+    ['S1', 'setter', 0], ['S2', 'setter', 1], ['OH1', 'outside', 0], ['OH2', 'outside', 1],
+    ['MB1', 'middle', 0], ['MB2', 'middle', 1], ['L', 'libero', 0],
+  ],
+};
 
-  return mapping as Record<RoleKey51, Player | undefined>;
-}
+function mapPlayersToRoles(players: Player[], system: RotationSystem): Partial<Record<RoleKey, Player>> {
+  const byRole: Partial<Record<PlayerRole, Player[]>> = {};
+  for (const player of players) {
+    (byRole[player.role] ??= []).push(player);
+  }
 
-function mapPlayersToRoles62(players: Player[]): Record<RoleKey62, Player | undefined> {
-  const mapping: Partial<Record<RoleKey62, Player>> = {};
-  const setters = players.filter(p => p.role === 'setter');
-  const outsides = players.filter(p => p.role === 'outside');
-  const middles = players.filter(p => p.role === 'middle');
-  const liberos = players.filter(p => p.role === 'libero');
-
-  if (setters[0]) mapping['S1'] = setters[0];
-  if (setters[1]) mapping['S2'] = setters[1];
-  if (outsides[0]) mapping['OH1'] = outsides[0];
-  if (outsides[1]) mapping['OH2'] = outsides[1];
-  if (middles[0]) mapping['MB1'] = middles[0];
-  if (middles[1]) mapping['MB2'] = middles[1];
-  if (liberos[0]) mapping['L'] = liberos[0];
-
-  return mapping as Record<RoleKey62, Player | undefined>;
+  const mapping: Partial<Record<RoleKey, Player>> = {};
+  for (const [slot, role, index] of ROLE_SLOTS[system]) {
+    mapping[slot] = byRole[role]?.[index];
+  }
+  return mapping;
 }
 
 export function getRotationState(
@@ -59,138 +49,65 @@ export function getRotationState(
 ): { positions: PlayerPosition[]; zones: ZoneArea[] } {
   const positions: PlayerPosition[] = [];
   const zones: ZoneArea[] = [];
+  const data = system === '5-1'
+    ? (VARIANT_DATA[variant] || rotations51)[rotation][phase]
+    : rotations62[rotation][phase];
+  const playerMap = mapPlayersToRoles(players, system);
 
-  if (system === '5-1') {
-    const rotationData = VARIANT_DATA[variant] || rotations51;
-    const data = rotationData[rotation][phase];
-    const playerMap = mapPlayersToRoles51(players);
-    const hasLibero = !!playerMap['L'];
-
-    // Determine which MB the libero replaces (the one sharing position with L)
-    const liberoPos = data.positions['L'];
-    let backRowMB: RoleKey51 | null = null;
-    if (hasLibero && useLibero && liberoPos) {
-      for (const mbKey of ['MB1', 'MB2'] as RoleKey51[]) {
-        const mbPos = data.positions[mbKey];
-        if (mbPos && Math.abs(mbPos.x - liberoPos.x) < 1.5 && Math.abs(mbPos.y - liberoPos.y) < 1.5) {
-          backRowMB = mbKey;
-          break;
-        }
+  // The settings toggle applies only to 5-1; 6-2 always uses an available libero.
+  const liberoEnabled = system === '6-2' || useLibero;
+  const substitutionDistance = system === '5-1' ? 1.5 : 1;
+  const liberoPos = data.positions.L;
+  let backRowMB: 'MB1' | 'MB2' | null = null;
+  if (playerMap.L && liberoEnabled && liberoPos) {
+    for (const mbKey of ['MB1', 'MB2'] as const) {
+      const mbPos = data.positions[mbKey];
+      if (mbPos && Math.abs(mbPos.x - liberoPos.x) < substitutionDistance && Math.abs(mbPos.y - liberoPos.y) < substitutionDistance) {
+        backRowMB = mbKey;
+        break;
       }
     }
+  }
 
-    for (const [roleKey, courtPos] of Object.entries(data.positions)) {
-      // Skip the back-row MB when libero replaces them
-      if (roleKey === backRowMB) continue;
-      // Skip libero when useLibero is disabled
-      if (roleKey === 'L' && !useLibero) continue;
-      const player = playerMap[roleKey as RoleKey51];
-      if (player) {
-        positions.push({
-          playerId: player.id,
-          role: player.role,
-          position: courtPos,
-        });
-      }
+  for (const [roleKey, courtPos] of Object.entries(data.positions)) {
+    if (roleKey === backRowMB || (roleKey === 'L' && !liberoEnabled)) continue;
+    const player = playerMap[roleKey as RoleKey];
+    if (player) {
+      positions.push({ playerId: player.id, role: player.role, position: courtPos });
     }
+  }
 
-    for (const zone of data.zones) {
-      if (zone.role === 'L' && !useLibero) continue;
-      const player = playerMap[zone.role as RoleKey51];
-      if (player) {
-        zones.push({
-          playerId: player.id,
-          role: player.role,
-          x: zone.x,
-          y: zone.y,
-          width: zone.width,
-          height: zone.height,
-          label: zone.label,
-        });
-      }
+  for (const zone of data.zones) {
+    if (zone.role === 'L' && !liberoEnabled) continue;
+    const player = playerMap[zone.role];
+    if (player) {
+      zones.push({
+        playerId: player.id,
+        role: player.role,
+        x: zone.x,
+        y: zone.y,
+        width: zone.width,
+        height: zone.height,
+        label: zone.label,
+      });
     }
+  }
 
-    // Add informational zone for back-row MB replaced by libero
-    if (backRowMB && useLibero) {
-      const liberoZone = data.zones.find(z => z.role === 'L');
-      const mbPlayer = playerMap[backRowMB];
-      if (liberoZone && mbPlayer) {
-        zones.push({
-          playerId: mbPlayer.id,
-          role: mbPlayer.role,
-          x: liberoZone.x,
-          y: liberoZone.y,
-          width: liberoZone.width,
-          height: liberoZone.height,
-          label: 'Off Court (Libero Sub)',
-          isSubstituted: true,
-        });
-      }
-    }
-  } else {
-    const data = rotations62[rotation][phase];
-    const playerMap = mapPlayersToRoles62(players);
-    const hasLibero = !!playerMap['L'];
-
-    // Determine which MB the libero replaces in 6-2
-    let backRowMB62: RoleKey62 | null = null;
-    if (hasLibero) {
-      const liberoPos = data.positions['L'];
-      if (liberoPos) {
-        for (const mbKey of ['MB1', 'MB2'] as RoleKey62[]) {
-          const mbPos = data.positions[mbKey];
-          if (mbPos && Math.abs(mbPos.x - liberoPos.x) < 1 && Math.abs(mbPos.y - liberoPos.y) < 1) {
-            backRowMB62 = mbKey;
-            break;
-          }
-        }
-      }
-    }
-
-    for (const [roleKey, courtPos] of Object.entries(data.positions)) {
-      if (roleKey === backRowMB62) continue;
-      if (roleKey === 'L' && !hasLibero) continue;
-      const player = playerMap[roleKey as RoleKey62];
-      if (player) {
-        positions.push({
-          playerId: player.id,
-          role: player.role,
-          position: courtPos,
-        });
-      }
-    }
-
-    for (const zone of data.zones) {
-      const player = playerMap[zone.role as RoleKey62];
-      if (player) {
-        zones.push({
-          playerId: player.id,
-          role: player.role,
-          x: zone.x,
-          y: zone.y,
-          width: zone.width,
-          height: zone.height,
-          label: zone.label,
-        });
-      }
-    }
-
-    // Add informational zone for back-row MB replaced by libero
-    if (backRowMB62) {
-      const liberoZone = data.zones.find(z => z.role === 'L');
-      const mbPlayer = playerMap[backRowMB62];
-      if (liberoZone && mbPlayer) {
-        zones.push({
-          playerId: mbPlayer.id,
-          role: mbPlayer.role,
-          x: liberoZone.x,
-          y: liberoZone.y,
-          width: liberoZone.width,
-          height: liberoZone.height,
-          label: 'Off Court (Libero Sub)',
-          isSubstituted: true,
-        });
-      }
+  // Retain an informational zone for the middle replaced by the libero.
+  if (backRowMB) {
+    const liberoZone = data.zones.find(z => z.role === 'L');
+    const mbPlayer = playerMap[backRowMB];
+    if (liberoZone && mbPlayer) {
+      zones.push({
+        playerId: mbPlayer.id,
+        role: mbPlayer.role,
+        x: liberoZone.x,
+        y: liberoZone.y,
+        width: liberoZone.width,
+        height: liberoZone.height,
+        label: 'Off Court (Libero Sub)',
+        isSubstituted: true,
+      });
     }
   }
 

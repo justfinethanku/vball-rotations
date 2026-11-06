@@ -4,7 +4,7 @@ import test from 'node:test';
 import lzString from 'lz-string';
 
 const require = createRequire(import.meta.url);
-const { decodeTeam, encodeTeam } = require('../.test-build/urlCodec.js');
+const { decodeTeam, encodeTeam } = require('../.test-build/lib/urlCodec.js');
 
 function team(system = '5-1') {
   const roles = system === '5-1'
