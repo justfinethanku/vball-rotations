@@ -2,7 +2,7 @@
 
 # VBall Rotations
 
-### Interactive Volleyball Rotation Tool
+Interactive volleyball rotation tool
 
 Visualize 5-1 and 6-2 systems with animated court diagrams,<br>player movements, and phase breakdowns.
 
@@ -58,7 +58,7 @@ VBall Rotations helps players, coaches, and fans understand volleyball rotation 
 
 ## Features
 
-### Interactive Court with Zone Overlays
+### Interactive court with zone overlays
 
 Click any player or filter by position to see their zone of responsibility, movement arrows, and coaching tips. Each rotation and phase has specific positional data.
 
@@ -69,7 +69,7 @@ Click any player or filter by position to see their zone of responsibility, move
 
 <br>
 
-### Player Info & Coaching Tips
+### Player info and coaching tips
 
 Tap any player token to see their role, zone, row assignment, coaching tips, and where they move next. Available in every rotation and phase.
 
@@ -80,7 +80,7 @@ Tap any player token to see their role, zone, row assignment, coaching tips, and
 
 <br>
 
-### Volleyball Glossary
+### Volleyball glossary
 
 Searchable reference for volleyball terms, court legend, rotation systems, and all 5-1 variants explained.
 
@@ -90,7 +90,7 @@ Searchable reference for volleyball terms, court legend, rotation systems, and a
 
 <br>
 
-### Team Customization & Settings
+### Team customization and settings
 
 Customize player names, jersey numbers, and roles. Switch between 5-1 and 6-2 systems, choose rotation variants (Standard, Spread, Slide-Heavy, Reverse), toggle libero, and adjust display preferences.
 
@@ -100,7 +100,7 @@ Customize player names, jersey numbers, and roles. Switch between 5-1 and 6-2 sy
 
 ---
 
-### All Features
+### All features
 
 **Rotation Systems**
 - 5-1 System with 4 variants: Standard, Spread, Slide-Heavy, Reverse
@@ -121,7 +121,7 @@ Customize player names, jersey numbers, and roles. Switch between 5-1 and 6-2 sy
 - Learn mode with phase descriptions
 
 **Sharing & Customization**
-- Shareable URLs with full team config (QR code)
+- Shareable team URLs and QR codes (see [what a link includes](#save-and-share-a-team))
 - Editable player names, numbers, roles
 - Multiple display modes (jersey, role abbreviation, name)
 - Court flip, reduce motion, libero toggle
@@ -132,45 +132,142 @@ Customize player names, jersey numbers, and roles. Switch between 5-1 and 6-2 sy
 - Touch-friendly bottom sheet settings
 - Safe area support
 
-**Keyboard Shortcuts**
+**Keyboard shortcuts**
+
+Shortcuts are ignored while editing an input, textarea, or select.
 
 | Key | Action |
 |-----|--------|
 | `Arrow Left` / `Arrow Right` | Step backward / forward |
 | `Space` | Play / Pause |
 | `1` - `6` | Jump to rotation |
-| `Escape` | Close modal or clear focus |
+| `Escape` | Close settings, then glossary, or clear the role filter |
 
 ---
 
-## Getting Started
+## Getting started
+
+This checkout is [Jonathan Edwards's fork](https://github.com/justfinethanku/vball-rotations)
+of [MoeHameed/vball-rotations](https://github.com/MoeHameed/vball-rotations).
+The live demo, screenshots, support links, and donation destination describe the
+upstream project; they do not identify a deployment of this fork.
 
 ### Prerequisites
 
-- [Node.js](https://nodejs.org/) 18+
-- npm
+- Git
+- [Node.js](https://nodejs.org/) **20.9 or later** and npm. Node 18 cannot run
+  the installed Next.js 16 release; see the [Next.js system requirements](https://nextjs.org/docs/app/getting-started/installation#system-requirements).
+- Network access for npm packages and the Inter font downloaded by
+  `next/font/google` during development compilation and production builds.
 
-### Install & Run
+The application needs no API keys, environment file, database, or account for
+local use. The setup and checks below were verified on Linux ARM64 with Node
+22.22.2 and npm 10.9.7; the minimum Node version was not tested.
+
+### Install and run
+
+1. Clone this fork and enter its directory:
+
+   ```bash
+   git clone https://github.com/justfinethanku/vball-rotations.git
+   cd vball-rotations
+   ```
+
+2. Install the versions recorded in `package-lock.json`:
+
+   ```bash
+   npm ci
+   ```
+
+3. Start the local development server:
+
+   ```bash
+   npm run dev -- --hostname 127.0.0.1
+   ```
+
+4. Open [the local application](http://localhost:3000). The page shows the
+   volleyball court and first-visit welcome screen. Stop the server with
+   `Ctrl+C` when finished.
+
+If port 3000 is occupied, add `--port 3001` to the server command and open
+`http://localhost:3001`. To test on another device on your network, bind to
+`0.0.0.0` instead of `127.0.0.1` and use the host's LAN address. Clipboard access
+may be unavailable over plain HTTP away from localhost.
+
+### Run the checks
+
+From the repository root, run each check before opening a pull request:
 
 ```bash
-git clone https://github.com/MoeHameed/vball-rotations.git
-cd vball-rotations
-npm install
-npm run dev
+npm test
+npm run lint
+npx tsc --noEmit
+npm run build
 ```
 
-Open [http://localhost:3000](http://localhost:3000).
+`npm test` compiles the tested library modules into `.test-build/` and runs the
+Node test runner with two test workers. The suite covers shared-link validation,
+rotation projection, comparison variants, and preference loading and saving.
+`npm run lint` runs ESLint; it is a separate command from the production build.
+There is no `typecheck` npm script, so use `npx tsc --noEmit` for a full type check.
 
-### Build for Production
+### Build and run for production
+
+Stop the development server first, then build and start the production server:
 
 ```bash
 npm run build
-npm start
+npm start -- --hostname 127.0.0.1
 ```
+
+Open [the local application](http://localhost:3000) again. `npm start` serves the
+existing `.next/` build; rebuild after changing the source. Keep the build output,
+`public/`, and installed dependencies available to the server. This repository
+uses the default Next.js server configuration, with no configured static export.
+
+For a separately hosted fork, review the hardcoded upstream domain in
+[`src/app/layout.tsx`](src/app/layout.tsx), [`src/app/sitemap.ts`](src/app/sitemap.ts),
+and [`public/robots.txt`](public/robots.txt) before publishing. Review the external
+links in [`SupportModal.tsx`](src/components/help/SupportModal.tsx) as well. This
+procedure verifies a local server; it does not provision hosting or change the
+upstream deployment.
+
+### Troubleshoot setup
+
+| Symptom | Action |
+|---------|--------|
+| Next.js rejects the Node version | Run `node --version` in the same terminal, switch to Node 20.9 or later, then rerun `npm ci`. |
+| A font download fails during compilation | Check outbound access to Google Fonts; the font is configured in `src/app/layout.tsx`. |
+| `npm start` cannot find a production build | Run `npm run build` successfully before starting the server. |
+| The welcome screen reappears or display choices reset | Check whether browser storage is disabled or cleared. Storage failures fall back to in-memory settings. |
+
+## Save and share a team
+
+Team edits are held in memory. Reloading a plain URL restores the default team;
+it does not restore your edited roster. Use **Share** and save the generated link
+before reloading if you want to keep the team.
+
+The generated `#data=` URL fragment and QR code contain the team name, system,
+players (IDs, names, jersey numbers, roles, avatars), and libero setting. They do
+**not** include the selected 5-1 variant, rotation, phase, playback speed, or
+display preferences. A shared link loads the team when the page first mounts;
+open or reload the full link to load another team.
+
+The fragment is compressed data, not encryption. Anyone with the link or QR code
+can read its roster. There is no server-side team store or revocation mechanism.
+The QR encoder loads when the share dialog opens. Copying the URL requires
+browser clipboard permission; if copying fails, the QR code remains available.
+
+Display mode, learn mode, reduced motion, court orientation, dismissed help, and
+onboarding state are stored separately in this browser's `vball-preferences`
+local-storage entry. They are not synchronized across devices. Clearing the
+site's browser storage resets those preferences; it does not invalidate saved
+team links. See [`preferences.ts`](src/lib/preferences.ts) and
+[`urlCodec.ts`](src/lib/urlCodec.ts) for the storage schema and share limits.
 
 ---
 
-## Tech Stack
+## Tech stack
 
 | Layer | Technology |
 |-------|-----------|
@@ -182,9 +279,9 @@ npm start
 
 ---
 
-## Project Structure
+## Project structure
 
-```
+```text
 src/
 ├── app/                    # Next.js App Router
 │   ├── page.tsx            # Main application page
@@ -210,7 +307,7 @@ src/
 │   ├── useTeam.ts          # Team/player state
 │   ├── useAnimation.ts     # Playback animation
 │   ├── usePreferences.ts   # User preferences (localStorage)
-│   └── useUrlState.ts      # URL sharing/persistence
+│   └── useUrlState.ts      # Load team fragment on mount; generate share links
 └── lib/
     ├── rotationEngine.ts   # Core engine: maps players to positions
     ├── constants.ts        # Role colors, default players
@@ -227,7 +324,7 @@ Contributions are welcome. If you find an inaccurate rotation position, a UI bug
 1. Fork the repo
 2. Create a feature branch (`git checkout -b fix/rotation-3-receive`)
 3. Make your changes
-4. Run `npm run build` to verify
+4. Run [all local checks](#run-the-checks)
 5. Open a pull request
 
 For rotation data changes, please verify positions against official volleyball overlap rules.
