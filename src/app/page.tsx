@@ -423,7 +423,7 @@ export default function Home() {
       </div>
 
       {/* ── Modals ── */}
-      <CompareView isOpen={compareOpen} onClose={() => setCompareOpen(false)} players={players} system={system} useLibero={useLibero} />
+      <CompareView isOpen={compareOpen} onClose={() => setCompareOpen(false)} players={players} system={system} useLibero={useLibero} variant={variant} />
       <SetupDrawer isOpen={setupOpen} onClose={() => setSetupOpen(false)}
         players={players} teamName={teamName} system={system} useLibero={useLibero}
         variant={variant} tokenDisplayMode={prefs.tokenDisplayMode}

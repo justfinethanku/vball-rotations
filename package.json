@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "test": "tsc src/lib/urlCodec.ts --outDir .test-build --module commonjs --esModuleInterop --target ES2017 --skipLibCheck && node --test --test-concurrency=2 tests/*.test.mjs",
+    "test": "tsc -p tsconfig.test.json && node --test --test-concurrency=2 tests/*.test.mjs",
     "lint": "eslint"
   },
   "dependencies": {
