@@ -44,9 +44,11 @@ export default function PhaseStepper({ current, onChange, compact = false }: Pha
               )}
               <button
                 onClick={() => onChange(phase)}
+                aria-label={PHASE_LABELS[phase]}
+                aria-pressed={isActive}
                 className={`focus-ring relative flex items-center justify-center rounded-full font-semibold transition-all btn-press ${
                   isActive
-                    ? 'bg-indigo-500 text-white shadow-lg shadow-indigo-500/30'
+                    ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/30'
                     : isPast
                       ? 'bg-indigo-500/20 text-indigo-300'
                       : 'bg-white/10 text-gray-400 hover:text-white hover:bg-white/15'

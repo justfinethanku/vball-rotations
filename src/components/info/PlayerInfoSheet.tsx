@@ -72,7 +72,7 @@ export function PlayerInfoSheet({
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <div className="h-8 w-8 rounded-full flex items-center justify-center text-xs font-bold text-white"
-              style={{ backgroundColor: color }}>
+              style={{ backgroundColor: color, color: '#030712' }}>
               {ROLE_SHORT[role]}
             </div>
             <div>
@@ -85,7 +85,7 @@ export function PlayerInfoSheet({
             </div>
           </div>
           <button onClick={onClose}
-            className="focus-ring p-1.5 rounded-lg text-gray-500 hover:text-white hover:bg-white/10 transition-colors"
+            className="focus-ring p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 transition-colors"
             aria-label="Close info">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />

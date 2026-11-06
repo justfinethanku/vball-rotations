@@ -126,7 +126,8 @@ export default function Home() {
   // Keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement || e.target instanceof HTMLSelectElement) return;
+      if (e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey || document.querySelector('dialog[open]')) return;
+      if (e.target instanceof Element && e.target.closest('input, textarea, select, button, a, [role="button"], [role="switch"], [contenteditable]:not([contenteditable="false"])')) return;
       switch (e.key) {
         case 'ArrowLeft': e.preventDefault(); stepBackward(); break;
         case 'ArrowRight': e.preventDefault(); stepForward(); break;
@@ -351,7 +352,7 @@ export default function Home() {
             <div className="flex items-center justify-center gap-3">
               <PhaseStepper current={currentPhase} onChange={setCurrentPhase} compact />
               <button onClick={togglePlay}
-                className="focus-ring w-11 h-11 rounded-full bg-indigo-500 text-white flex items-center justify-center btn-press shadow-lg shadow-indigo-500/40 hover:bg-indigo-400 transition-all"
+                className="focus-ring w-11 h-11 rounded-full bg-indigo-600 text-white flex items-center justify-center btn-press shadow-lg shadow-indigo-500/40 hover:bg-indigo-700 transition-all"
                 aria-label={isPlaying ? 'Pause' : 'Play'}>
                 {isPlaying ? (
                   <svg width="16" height="16" viewBox="0 0 22 22" fill="none"><rect x="5" y="4" width="4" height="14" rx="1" fill="currentColor"/><rect x="13" y="4" width="4" height="14" rx="1" fill="currentColor"/></svg>
@@ -382,7 +383,7 @@ export default function Home() {
                 content="Each player has a role: Setter runs the offense, Outside Hitters attack from the left, Middle Blockers are quick attackers and primary blockers, Opposite attacks from the right, and the Libero is a defensive specialist."
                 dismissed={prefs.dismissedHelp.includes('help-positions')}
                 onDismiss={prefs.dismissHelp}>
-                <span className="text-xs uppercase tracking-wider text-gray-500 font-medium">Position</span>
+                <span className="text-xs uppercase tracking-wider text-gray-400 font-medium">Position</span>
               </HelpPopover>
               <PositionFilter focusedRole={focusedRole} onToggle={toggleFocusedRole} system={system} />
             </div>
@@ -392,7 +393,7 @@ export default function Home() {
                 content="There are 6 rotations in volleyball. Teams rotate clockwise each time they win serve back. Each rotation determines the serving order and which players are in the front vs back row."
                 dismissed={prefs.dismissedHelp.includes('help-rotations')}
                 onDismiss={prefs.dismissHelp}>
-                <span className="text-xs uppercase tracking-wider text-gray-500 font-medium">Rotation</span>
+                <span className="text-xs uppercase tracking-wider text-gray-400 font-medium">Rotation</span>
               </HelpPopover>
               <RotationCarousel current={currentRotation} onChange={setCurrentRotation} system={system} />
             </div>
@@ -402,7 +403,7 @@ export default function Home() {
                 content="Each rotation has 3 phases. Serve: where players stand for the serve. Receive: formation for passing. Transition: where players move to attack or defend after the ball is in play."
                 dismissed={prefs.dismissedHelp.includes('help-phases')}
                 onDismiss={prefs.dismissHelp}>
-                <span className="text-xs uppercase tracking-wider text-gray-500 font-medium">Phase</span>
+                <span className="text-xs uppercase tracking-wider text-gray-400 font-medium">Phase</span>
               </HelpPopover>
               <PhaseStepper current={currentPhase} onChange={setCurrentPhase} />
             </div>

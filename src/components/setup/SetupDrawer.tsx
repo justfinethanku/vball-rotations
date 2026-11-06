@@ -1,5 +1,8 @@
 'use client';
 
+import { useId } from 'react';
+import { Modal } from '@/components/Modal';
+
 import { AnimatePresence, motion, useDragControls } from 'framer-motion';
 import { Player, RotationSystem, VariantId, TokenDisplayMode } from '@/lib/types';
 import { getVariantsForSystem } from '@/data/variants';
@@ -33,18 +36,21 @@ interface SetupDrawerProps {
 function Toggle({
   checked,
   onToggle,
+  label,
 }: {
   checked: boolean;
   onToggle: () => void;
+  label: string;
 }) {
   return (
     <button
       type="button"
       role="switch"
+      aria-label={label}
       aria-checked={checked}
       onClick={onToggle}
       className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full transition-colors duration-200 ease-in-out ${
-        checked ? 'bg-indigo-500' : 'bg-gray-600'
+        checked ? 'bg-indigo-600' : 'bg-gray-600'
       }`}
     >
       <span
@@ -80,6 +86,7 @@ export function SetupDrawer({
   onResetPlayers,
   onReplayOnboarding,
 }: SetupDrawerProps) {
+  const fieldId = useId();
   const dragControls = useDragControls();
   const variants = getVariantsForSystem(system);
 
@@ -90,6 +97,7 @@ export function SetupDrawer({
   ];
 
   return (
+    <Modal isOpen={isOpen} onClose={onClose} label="Settings">
     <AnimatePresence>
       {isOpen && (
         <>
@@ -153,10 +161,11 @@ export function SetupDrawer({
             <div className="scroll-fade-bottom flex-1 overflow-y-auto px-5" style={{ paddingBottom: `max(2rem, calc(2rem + env(safe-area-inset-bottom, 0px)))` }}>
               {/* Team name */}
               <div className="mb-4">
-                <label className="mb-1 block text-xs text-gray-400">
+                <label htmlFor={`${fieldId}-team`} className="mb-1 block text-xs text-gray-400">
                   Team Name
                 </label>
                 <input
+                  id={`${fieldId}-team`}
                   type="text"
                   value={teamName}
                   onChange={(e) => onTeamNameChange(e.target.value)}
@@ -175,9 +184,10 @@ export function SetupDrawer({
                     <button
                       key={s}
                       onClick={() => onSystemChange(s)}
+                      aria-pressed={system === s}
                       className={`flex-1 rounded-md px-4 py-2 text-sm font-medium transition-colors ${
                         system === s
-                          ? 'bg-indigo-500 text-white shadow'
+                          ? 'bg-indigo-600 text-white shadow'
                           : 'text-gray-400 hover:text-white'
                       }`}
                     >
@@ -190,10 +200,11 @@ export function SetupDrawer({
               {/* Variant selector (5-1 only) */}
               {system === '5-1' && variants.length > 0 && (
                 <div className="mb-5">
-                  <label className="mb-1 block text-xs text-gray-400">
+                  <label htmlFor={`${fieldId}-variant`} className="mb-1 block text-xs text-gray-400">
                     Variant
                   </label>
                   <select
+                    id={`${fieldId}-variant`}
                     value={variant}
                     onChange={(e) => onVariantChange(e.target.value as VariantId)}
                     className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none transition-colors focus:border-indigo-500"
@@ -219,6 +230,7 @@ export function SetupDrawer({
                     </p>
                   </div>
                   <Toggle
+                    label="Use Libero"
                     checked={useLibero}
                     onToggle={() => onUseLiberoChange(!useLibero)}
                   />
@@ -243,9 +255,10 @@ export function SetupDrawer({
                     <button
                       key={mode.value}
                       onClick={() => onTokenDisplayModeChange(mode.value)}
+                      aria-pressed={tokenDisplayMode === mode.value}
                       className={`flex-1 rounded-md px-2 py-2 text-xs font-medium transition-colors ${
                         tokenDisplayMode === mode.value
-                          ? 'bg-indigo-500 text-white shadow'
+                          ? 'bg-indigo-600 text-white shadow'
                           : 'text-gray-400 hover:text-white'
                       }`}
                     >
@@ -265,7 +278,7 @@ export function SetupDrawer({
                     Show rotation tips and explanations
                   </p>
                 </div>
-                <Toggle checked={learnMode} onToggle={onLearnModeToggle} />
+                <Toggle label="Learn Mode" checked={learnMode} onToggle={onLearnModeToggle} />
               </div>
 
               {/* Reduce Motion toggle */}
@@ -279,6 +292,7 @@ export function SetupDrawer({
                   </p>
                 </div>
                 <Toggle
+                  label="Reduce Motion"
                   checked={reduceMotion}
                   onToggle={onReduceMotionToggle}
                 />
@@ -295,6 +309,7 @@ export function SetupDrawer({
                   </p>
                 </div>
                 <Toggle
+                  label="Flip Court"
                   checked={courtFlipped}
                   onToggle={onCourtFlipToggle}
                 />
@@ -339,5 +354,6 @@ export function SetupDrawer({
         </>
       )}
     </AnimatePresence>
+    </Modal>
   );
 }

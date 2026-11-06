@@ -44,3 +44,7 @@ next-env.d.ts
 /docs/superpowers/
 # Compiled security regression tests
 .test-build/
+
+# Browser test output
+/test-results/
+/playwright-report/

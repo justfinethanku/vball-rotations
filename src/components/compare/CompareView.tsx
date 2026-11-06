@@ -1,5 +1,7 @@
 'use client';
 
+import { Modal } from '@/components/Modal';
+
 import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Player, RotationSystem, RotationNumber, Phase, VariantId } from '@/lib/types';
@@ -55,6 +57,7 @@ function RotationCourtPanel({
       {/* Selectors */}
       <div className="flex gap-2">
         <select
+          aria-label={`${label} rotation`}
           value={rotation}
           onChange={(e) => onRotationChange(Number(e.target.value) as RotationNumber)}
           className="bg-white/10 text-white text-sm rounded-lg px-2 py-1.5 border border-white/10 focus:outline-none focus:ring-1 focus:ring-indigo-500"
@@ -67,6 +70,7 @@ function RotationCourtPanel({
         </select>
 
         <select
+          aria-label={`${label} phase`}
           value={phase}
           onChange={(e) => onPhaseChange(e.target.value as Phase)}
           className="bg-white/10 text-white text-sm rounded-lg px-2 py-1.5 border border-white/10 focus:outline-none focus:ring-1 focus:ring-indigo-500"
@@ -112,6 +116,7 @@ export function CompareView({ isOpen, onClose, players, system, useLibero = true
   const [phaseB, setPhaseB] = useState<Phase>('receive');
 
   return (
+    <Modal isOpen={isOpen} onClose={onClose} label="Compare Rotations">
     <AnimatePresence>
       {isOpen && (
         <>
@@ -192,5 +197,6 @@ export function CompareView({ isOpen, onClose, players, system, useLibero = true
         </>
       )}
     </AnimatePresence>
+    </Modal>
   );
 }

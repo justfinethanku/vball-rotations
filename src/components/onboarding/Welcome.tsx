@@ -1,5 +1,7 @@
 'use client';
 
+import { Modal } from '@/components/Modal';
+
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -17,7 +19,7 @@ const steps = [
           <div className="absolute top-1/3 inset-x-0 h-0.5 bg-white/50" />
           <span className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[9px] text-white/40">NET</span>
           {[[25,20],[50,20],[75,20],[25,65],[50,65],[75,65]].map(([x,y], i) => (
-            <div key={i} className="absolute w-5 h-5 rounded-full bg-indigo-500 border border-white/50"
+            <div key={i} className="absolute w-5 h-5 rounded-full bg-indigo-600 border border-white/50"
               style={{ left: `${x}%`, top: `${y}%`, transform: 'translate(-50%,-50%)' }}>
               <span className="flex items-center justify-center h-full text-[8px] font-bold text-white">{i+1}</span>
             </div>
@@ -39,7 +41,7 @@ const steps = [
           <div key={p.label} className="flex items-center">
             {i > 0 && <div className="w-4 h-0.5 bg-white/20" />}
             <div className={`px-3 py-1.5 rounded-full text-xs font-semibold ${
-              p.active ? 'bg-indigo-500 text-white' : 'bg-white/10 text-gray-400'
+              p.active ? 'bg-indigo-600 text-white' : 'bg-white/10 text-gray-400'
             }`}>{p.label}</div>
           </div>
         ))}
@@ -60,7 +62,7 @@ const steps = [
         ].map(({ label, color }) => (
           <div key={label}
             className="w-10 h-10 rounded-full flex items-center justify-center text-xs font-bold text-white shadow-lg"
-            style={{ backgroundColor: color }}>
+            style={{ backgroundColor: color, color: '#030712' }}>
             {label}
           </div>
         ))}
@@ -87,12 +89,14 @@ export default function Welcome({ onComplete }: WelcomeProps) {
   };
 
   return (
+    <Modal isOpen onClose={onComplete} label="Volleyball tutorial">
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-950/95 backdrop-blur-sm">
       <div className="max-w-sm w-full mx-4 flex flex-col items-center">
-        <div className="flex items-center gap-2 mb-4">
+        <p role="status" className="sr-only">Step {current + 1} of {steps.length}: {steps[current].title}</p>
+        <div aria-hidden="true" className="flex items-center gap-2 mb-4">
           {steps.map((_, i) => (
             <div key={i} className={`h-1 rounded-full transition-all ${
-              i === current ? 'w-8 bg-indigo-500' : i < current ? 'w-4 bg-indigo-500/50' : 'w-4 bg-gray-700'
+              i === current ? 'w-8 bg-indigo-600' : i < current ? 'w-4 bg-indigo-500/50' : 'w-4 bg-gray-700'
             }`} />
           ))}
         </div>
@@ -112,15 +116,16 @@ export default function Welcome({ onComplete }: WelcomeProps) {
 
         <div className="flex items-center justify-between w-full mt-5">
           <button onClick={onComplete}
-            className="text-sm text-gray-500 hover:text-gray-300 transition-colors px-3 py-2 focus-ring rounded-lg">
+            className="text-sm text-gray-400 hover:text-gray-300 transition-colors px-3 py-2 focus-ring rounded-lg">
             Skip
           </button>
           <button onClick={goNext}
-            className="focus-ring px-5 py-2 rounded-lg bg-indigo-500 hover:bg-indigo-400 text-white text-sm font-medium transition-colors">
+            className="focus-ring px-5 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium transition-colors">
             {isLast ? 'Get Started' : 'Next'}
           </button>
         </div>
       </div>
     </div>
+    </Modal>
   );
 }

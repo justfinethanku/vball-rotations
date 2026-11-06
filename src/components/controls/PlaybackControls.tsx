@@ -70,7 +70,7 @@ export default function PlaybackControls({
       {/* Play / Pause */}
       <button
         onClick={onTogglePlay}
-        className="btn-press p-3 rounded-full bg-indigo-500 text-white hover:bg-indigo-600 transition-colors"
+        className="btn-press p-3 rounded-full bg-indigo-600 text-white hover:bg-indigo-600 transition-colors"
         aria-label={isPlaying ? 'Pause' : 'Play'}
       >
         {isPlaying ? <PauseIcon /> : <PlayIcon />}
@@ -91,6 +91,8 @@ export default function PlaybackControls({
           <button
             key={opt.value}
             onClick={() => onSpeedChange(opt.value)}
+            aria-label={`Playback speed ${opt.label}`}
+            aria-pressed={speed === opt.value}
             className={`btn-press px-2 py-1 text-xs font-medium rounded-md transition-colors ${
               speed === opt.value
                 ? 'bg-white text-black'
