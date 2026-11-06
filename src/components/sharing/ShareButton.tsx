@@ -1,8 +1,10 @@
 'use client';
 
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, lazy, Suspense } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { QRCodeSVG } from 'qrcode.react';
+
+// The encoder is only needed after the share dialog opens.
+const QRCodeSVG = lazy(() => import('qrcode.react').then((mod) => ({ default: mod.QRCodeSVG })));
 
 interface ShareButtonProps {
   onShare: () => Promise<string>;
@@ -133,10 +135,16 @@ export function ShareButton({ onShare, teamName, system }: ShareButtonProps) {
                 {/* QR Code */}
                 <div className="mt-5 flex justify-center">
                   <div className="rounded-xl bg-white p-4">
-                    <QRCodeSVG
-                      value={shareUrl}
-                      size={200}
-                    />
+                    <Suspense fallback={
+                      <div className="flex h-[200px] w-[200px] items-center justify-center text-sm text-gray-600" role="status">
+                        Loading QR code…
+                      </div>
+                    }>
+                      <QRCodeSVG
+                        value={shareUrl}
+                        size={200}
+                      />
+                    </Suspense>
                   </div>
                 </div>
 
