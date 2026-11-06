@@ -1,5 +1,7 @@
 'use client';
 
+import { Modal } from '@/components/Modal';
+
 import { AnimatePresence, motion } from 'framer-motion';
 
 interface SupportModalProps {
@@ -9,6 +11,7 @@ interface SupportModalProps {
 
 export function SupportModal({ isOpen, onClose }: SupportModalProps) {
   return (
+    <Modal isOpen={isOpen} onClose={onClose} label="Support & Feedback">
     <AnimatePresence>
       {isOpen && (
         <>
@@ -49,7 +52,7 @@ export function SupportModal({ isOpen, onClose }: SupportModalProps) {
                   href="https://donate.stripe.com/9B68wOgRb8YbdNNdBH67S04"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 rounded-lg bg-indigo-500 px-4 py-2.5 text-sm font-medium text-white shadow-lg shadow-indigo-500/30 hover:bg-indigo-400 transition-colors btn-press"
+                  className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-medium text-white shadow-lg shadow-indigo-500/30 hover:bg-indigo-700 transition-colors btn-press"
                 >
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
@@ -71,7 +74,7 @@ export function SupportModal({ isOpen, onClose }: SupportModalProps) {
                   </svg>
                   <div>
                     <div className="font-medium">GitHub Repository</div>
-                    <div className="text-xs text-gray-500">View source, star, or contribute</div>
+                    <div className="text-xs text-gray-400">View source, star, or contribute</div>
                   </div>
                 </a>
 
@@ -86,7 +89,7 @@ export function SupportModal({ isOpen, onClose }: SupportModalProps) {
                   </svg>
                   <div>
                     <div className="font-medium">Report a Bug</div>
-                    <div className="text-xs text-gray-500">Open an issue on GitHub</div>
+                    <div className="text-xs text-gray-400">Open an issue on GitHub</div>
                   </div>
                 </a>
 
@@ -99,7 +102,7 @@ export function SupportModal({ isOpen, onClose }: SupportModalProps) {
                   </svg>
                   <div>
                     <div className="font-medium">Contact</div>
-                    <div className="text-xs text-gray-500">hello@mohammadhameed.dev</div>
+                    <div className="text-xs text-gray-400">hello@mohammadhameed.dev</div>
                   </div>
                 </a>
               </div>
@@ -108,5 +111,6 @@ export function SupportModal({ isOpen, onClose }: SupportModalProps) {
         </>
       )}
     </AnimatePresence>
+    </Modal>
   );
 }

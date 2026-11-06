@@ -1,5 +1,7 @@
 'use client';
 
+import { Modal } from '@/components/Modal';
+
 import { useState, useCallback, useEffect, lazy, Suspense } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 
@@ -92,12 +94,13 @@ export function ShareButton({ onShare, teamName, system }: ShareButtonProps) {
           )}
         </button>
         {error && (
-          <span className="absolute top-full left-1/2 -translate-x-1/2 mt-1 whitespace-nowrap rounded bg-red-600/90 px-2 py-1 text-xs text-white shadow-lg">
+          <span role="alert" className="absolute top-full left-1/2 -translate-x-1/2 mt-1 whitespace-nowrap rounded bg-red-600/90 px-2 py-1 text-xs text-white shadow-lg">
             {error}
           </span>
         )}
       </div>
 
+      <Modal isOpen={isOpen} onClose={handleClose} label="Share with your team">
       <AnimatePresence>
         {isOpen && (
           <>
@@ -149,15 +152,17 @@ export function ShareButton({ onShare, teamName, system }: ShareButtonProps) {
                 </div>
 
                 {/* URL */}
-                <p className="mt-4 text-center font-mono text-xs text-gray-500 break-all">
+                <p className="mt-4 text-center font-mono text-xs text-gray-400 break-all">
                   {truncatedUrl}
                 </p>
+
+                <span role="status" className="sr-only">{copied ? 'Link copied' : ''}</span>
 
                 {/* Actions */}
                 <div className="mt-5 flex gap-3">
                   <button
                     onClick={handleCopy}
-                    className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-indigo-500 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-indigo-600"
+                    className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-indigo-600"
                   >
                     {copied ? (
                       <>
@@ -209,6 +214,7 @@ export function ShareButton({ onShare, teamName, system }: ShareButtonProps) {
           </>
         )}
       </AnimatePresence>
+      </Modal>
     </>
   );
 }

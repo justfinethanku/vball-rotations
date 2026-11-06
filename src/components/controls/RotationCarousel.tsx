@@ -28,9 +28,10 @@ export default function RotationCarousel({ current, onChange, system, compact = 
           <button
             key={r}
             onClick={() => onChange(r)}
+            aria-pressed={current === r}
             className={`focus-ring w-11 h-11 rounded-full text-sm font-bold btn-press transition-all ${
               current === r
-                ? 'bg-indigo-500 text-white shadow-lg shadow-indigo-500/40'
+                ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/40'
                 : 'text-gray-400 hover:text-white'
             }`}
             aria-label={`Rotation ${r}, ${getSetterRow(r)}`}
@@ -52,6 +53,7 @@ export default function RotationCarousel({ current, onChange, system, compact = 
           <button
             key={r}
             onClick={() => onChange(r)}
+            aria-pressed={current === r}
             className={`focus-ring flex-1 flex flex-col items-center gap-0.5 rounded-lg py-2 transition-all btn-press ${
               isActive
                 ? 'bg-indigo-500/20 border border-indigo-500/40 text-white'
@@ -59,7 +61,7 @@ export default function RotationCarousel({ current, onChange, system, compact = 
             }`}
           >
             <span className="text-base font-bold">R{r}</span>
-            <span className={`text-[10px] leading-tight ${isActive ? 'text-indigo-300' : 'text-gray-500'}`}>
+            <span className={`text-[10px] leading-tight ${isActive ? 'text-indigo-300' : 'text-gray-400'}`}>
               {setterRow}
             </span>
           </button>

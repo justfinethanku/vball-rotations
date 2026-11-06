@@ -49,9 +49,16 @@ export default function PlayerToken(props: PlayerTokenProps) {
       transition={{ type: 'spring', stiffness: 200, damping: 25 }}
       onClick={onClick}
       style={{ cursor: onClick ? 'pointer' : 'default' }}
-      role="button"
+      role={onClick ? 'button' : 'img'}
+      aria-pressed={onClick ? isFocused : undefined}
       aria-label={`${name}, ${ROLE_SHORT[role]}, ${isBackRow ? 'back' : 'front'} row`}
       tabIndex={onClick ? 0 : undefined}
+      onKeyDown={onClick ? (event) => {
+        if (event.key !== 'Enter' && event.key !== ' ') return;
+        event.preventDefault();
+        event.stopPropagation();
+        if (!event.repeat) onClick();
+      } : undefined}
     >
       {isFocused && (
         <text y={youLabelY} textAnchor="middle" dominantBaseline="central"
@@ -76,7 +83,7 @@ export default function PlayerToken(props: PlayerTokenProps) {
           strokeDasharray={isBackRow ? '6 3' : undefined} />
       )}
 
-      <text textAnchor="middle" dominantBaseline="central" fill="white"
+      <text textAnchor="middle" dominantBaseline="central" fill="#030712"
         fontSize={displayMode === 'name' ? 11 : 14} fontWeight="bold"
         style={{ userSelect: 'none', pointerEvents: 'none' }}>
         {displayText}

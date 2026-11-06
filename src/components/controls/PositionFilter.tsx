@@ -1,7 +1,7 @@
 'use client';
 
 import { PlayerRole, RotationSystem } from '@/lib/types';
-import { ROLE_COLORS, ROLE_SHORT } from '@/lib/constants';
+import { ROLE_COLORS, ROLE_SHORT, ROLE_LABELS } from '@/lib/constants';
 
 interface PositionFilterProps {
   focusedRole: PlayerRole | null;
@@ -24,6 +24,7 @@ export default function PositionFilter({ focusedRole, onToggle, system }: Positi
       {/* All chip */}
       <button
         onClick={() => onToggle(null)}
+        aria-pressed={focusedRole === null}
         className={`flex-shrink-0 flex items-center gap-1.5 px-2 py-1 text-xs font-medium rounded-full transition-colors ${
           focusedRole === null
             ? 'bg-white text-black'
@@ -45,9 +46,11 @@ export default function PositionFilter({ focusedRole, onToggle, system }: Positi
           <button
             key={role}
             onClick={() => onToggle(isActive ? null : role)}
+            aria-label={ROLE_LABELS[role]}
+            aria-pressed={isActive}
             className={`flex-shrink-0 flex items-center gap-1.5 px-2 py-1 text-xs font-medium rounded-full transition-colors ${
               isActive
-                ? 'text-white'
+                ? 'text-gray-950'
                 : 'bg-white/10 text-white hover:bg-white/20'
             }`}
             style={isActive ? { backgroundColor: color } : undefined}

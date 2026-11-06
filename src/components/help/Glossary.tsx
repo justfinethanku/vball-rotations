@@ -1,5 +1,7 @@
 'use client';
 
+import { Modal } from '@/components/Modal';
+
 import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 
@@ -41,6 +43,7 @@ export function Glossary({ isOpen, onClose }: GlossaryProps) {
     : TERMS;
 
   return (
+    <Modal isOpen={isOpen} onClose={onClose} label="Volleyball Glossary">
     <AnimatePresence>
       {isOpen && (
         <>
@@ -62,7 +65,7 @@ export function Glossary({ isOpen, onClose }: GlossaryProps) {
               </button>
             </div>
             <div className="px-5 py-3">
-              <input type="text" value={search} onChange={e => setSearch(e.target.value)}
+              <input aria-label="Search glossary terms" type="text" value={search} onChange={e => setSearch(e.target.value)}
                 placeholder="Search terms..."
                 className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder-gray-500 outline-none focus:border-indigo-500 transition-colors" />
             </div>
@@ -95,7 +98,7 @@ export function Glossary({ isOpen, onClose }: GlossaryProps) {
                   </div>
                 ))}
                 {filtered.length === 0 && (
-                  <p className="text-sm text-gray-500 text-center py-4">No matching terms</p>
+                  <p className="text-sm text-gray-400 text-center py-4">No matching terms</p>
                 )}
               </div>
             </div>
@@ -103,5 +106,6 @@ export function Glossary({ isOpen, onClose }: GlossaryProps) {
         </>
       )}
     </AnimatePresence>
+    </Modal>
   );
 }

@@ -33,10 +33,26 @@ body {
 
 .btn-press:active { opacity: 0.7; }
 
-.focus-ring:focus-visible {
+:where(button, a, input, select, textarea, [tabindex]):focus-visible {
   outline: 2px solid #818cf8;
   outline-offset: 2px;
 }
+
+.modal-shell {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100dvh;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+}
+
+.modal-shell::backdrop { background: transparent; }
 
 ::selection { background: rgba(99, 102, 241, 0.3); }
 
